@@ -1,19 +1,20 @@
 import React from 'react';
-
-import Menu from './components/Menu';
-
+import { Provider } from 'react-redux';
 import './App.css';
 
-import authenticationService from './services/authentication';
-import SocketProvider from './contexts/SocketProvider';
+import Menu from './components/common/Menu';
+import { SocketProvider } from './contexts/SocketContext';
+import store from './redux/store';
 
 function App() {
   return (
-    <SocketProvider>
-      <div className={authenticationService.getRole() === "admin" ? "AppAdmin" : "App"}>
-        <Menu />
-      </div>
-    </SocketProvider>
+    <Provider store={store}>
+      <SocketProvider>
+        <div>
+          <Menu />
+        </div>
+      </SocketProvider>
+    </Provider>
   );
 }
 

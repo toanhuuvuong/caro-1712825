@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { 
   Form, FormGroup, Input,
   Label, Col,
-  Button,
-  Card
+  Button, Card
 } from 'reactstrap';
 
 import defaultAvatar from './images/default-avatar.png';
-import Notification from '../../../components/Notification';
+import Notification from '../../../components/common/Notification';
+import AsteriskIcon from '../../../components/common/AsteriskIcon';
 import updateProfileAPI from '../../../api/user/update-profile';
-import userAPI from '../../../api/user';
+import userAPI from '../../../api/common/user';
 import authenticationService from '../../../services/authentication';
 
 function UpdateProfile() {
@@ -49,10 +49,7 @@ function UpdateProfile() {
     });
   };
 
-  const renderAsteriskIcon = () => {
-    return <span style={{color: "red"}}>(*)</span>;
-  };
-
+  // --- Render
   return (
     <Card body className="col-sm-6 card text-center">
       <h1>Update Profile Form</h1>
@@ -81,7 +78,7 @@ function UpdateProfile() {
 
         <FormGroup row className="text-right">
           <Label for="name" sm={3}>
-            Name {renderAsteriskIcon()}
+            Name <AsteriskIcon />
           </Label>
           <Col sm={9}>
             <Input type="search"

@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { 
   Form, FormGroup, Input,
   Label, Col,
-  Button,
-  Card
+  Button, Card
 } from 'reactstrap';
 
-import Notification from '../../../components/Notification';
+import Notification from '../../../components/common/Notification';
+import AsteriskIcon from '../../../components/common/AsteriskIcon';
 import changePasswordAPI from '../../../api/user/change-password';
 
 function ChangePassword() {
@@ -30,17 +30,12 @@ function ChangePassword() {
 
   const handleChangeButtonOnClick = event => {
     event.preventDefault();
-
     changePasswordAPI.change(passwordInput, password2Input)
     .then(data => {
       setAlertIsOpen(true);
       setMessages(data.errors ? data.errors : [data.messageCode]);
       setAlertColor(data.ok ? 'success' : 'danger');
     });
-  };
-
-  const renderAsteriskIcon = () => {
-    return <span style={{color: "red"}}>(*)</span>;
   };
 
   return (
@@ -54,7 +49,7 @@ function ChangePassword() {
       <Form className="change-password-form">
         <FormGroup row className="text-right">
           <Label for="password" sm={3}>
-            Password {renderAsteriskIcon()}
+            Password <AsteriskIcon />
           </Label>
           <Col sm={9}>
             <Input type="password"
@@ -67,7 +62,7 @@ function ChangePassword() {
 
         <FormGroup row className="text-right">
           <Label for="password2" sm={3}>
-            Password Against {renderAsteriskIcon()}
+            Password Against <AsteriskIcon />
           </Label>
           <Col sm={9}>
             <Input type="password"

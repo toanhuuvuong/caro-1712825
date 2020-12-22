@@ -4,7 +4,19 @@ export default {
   SERVER_URL: 'http://localhost:8080',
   CLIENT_URL: 'http://localhost:3000',
   GAME_STATE_DEFAULT: {
-    COL: 3,
-    ROW: 3
+    COL: 30,
+    ROW: 30
+  },
+  ACTION_TYPES: {
+    GAME: {
+      CLICK: 'CLICK',
+      JUMP_TO: 'JUMP_TO',
+      HIGHT_LIGHT: 'HIGHT_LIGHT',
+      SORT: 'SORT',
+      CHANGE_BOARD_SIZE: 'CHANGE_BOARD_SIZE',
+      GET_ROOM_DETAIL: 'GET_ROOM_DETAIL',
+      GET_PLAYER: 'GET_PLAYER',
+      CHANGE_GAME_STATE: 'CHANGE_GAME_STATE'
+    }
   }
-}
+};

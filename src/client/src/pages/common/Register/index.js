@@ -7,19 +7,29 @@ import {
 
 import Notification from '../../../components/common/Notification';
 import AsteriskIcon from '../../../components/common/AsteriskIcon';
-import changePasswordAPI from '../../../api/admin/change-password';
+import registerAPI from '../../../api/common/register';
 
-function ChangePassword() {
+function Register() {
   // --- State
   // Notification
   const [messages, setMessages] = useState([]);
   const [alertIsOpen, setAlertIsOpen] = useState(false);
   const [alertColor, setAlertColor] = useState('danger');
   // Input
+  const [usernameInput, setUsernameInput] = useState('');
+  const [nameInput, setNameInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [password2Input, setPassword2Input] = useState('');
 
-  // --- Handle function
+  // --- Hanle functions
+  const handleUsernameInputChange = event => {
+    setUsernameInput(event.target.value);
+  };
+
+  const handleNameInputChange = event => {
+    setNameInput(event.target.value);
+  };
+
   const handlePasswordInputChange = event => {
     setPasswordInput(event.target.value);
   };
@@ -28,9 +38,9 @@ function ChangePassword() {
     setPassword2Input(event.target.value);
   };
 
-  const handleChangeButtonOnClick = event => {
+  const handleRegisterButtonOnClick = event => {
     event.preventDefault();
-    changePasswordAPI.change(passwordInput, password2Input)
+    registerAPI.register(usernameInput, nameInput, passwordInput, password2Input)
     .then(data => {
       setAlertIsOpen(true);
       setMessages(data.errors ? data.errors : [data.messageCode]);
@@ -40,13 +50,39 @@ function ChangePassword() {
 
   return (
     <Card body className="col-sm-6 card text-center">
-      <h1>Change Password Form</h1>
+      <h1>Register Form</h1>
 
       <Notification color={alertColor} 
       isOpen={alertIsOpen} 
       messages={messages} />
 
-      <Form className="change-password-form">
+      <Form className="register-form">
+        <FormGroup row className="text-right">
+          <Label for="username" sm={3}>
+            Username <AsteriskIcon />
+          </Label>
+          <Col sm={9}>
+            <Input type="search"
+            id="username"
+            placeholder="Nhập tên tài khoản..."
+            value={usernameInput}
+            onChange={handleUsernameInputChange}></Input>
+          </Col>
+        </FormGroup>
+
+        <FormGroup row className="text-right">
+          <Label for="name" sm={3}>
+            Name <AsteriskIcon />
+          </Label>
+          <Col sm={9}>
+            <Input type="search"
+            id="name"
+            placeholder="Nhập họ tên..."
+            value={nameInput}
+            onChange={handleNameInputChange}></Input>
+          </Col>
+        </FormGroup>
+
         <FormGroup row className="text-right">
           <Label for="password" sm={3}>
             Password <AsteriskIcon />
@@ -54,7 +90,7 @@ function ChangePassword() {
           <Col sm={9}>
             <Input type="password"
             id="password"
-            placeholder="Nhập mật khẩu mới..."
+            placeholder="Nhập mật khẩu..."
             value={passwordInput}
             onChange={handlePasswordInputChange}></Input>
           </Col>
@@ -74,10 +110,10 @@ function ChangePassword() {
         </FormGroup>
         
         <Button className="col-sm-6" 
-        onClick={handleChangeButtonOnClick}>Change</Button>
+        onClick={handleRegisterButtonOnClick}>Register</Button>
       </Form>
     </Card>
   );
 }
 
-export default ChangePassword;
+export default Register;

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   getToken: function() {
     return localStorage.getItem('token');
   },
@@ -13,7 +13,6 @@ module.exports = {
   },
   login: function(resObject) {
     const {token, userId, role} = resObject;
-
     localStorage.setItem('token', token);
     localStorage.setItem('user-id', userId);
     localStorage.setItem('role', role);
@@ -24,9 +23,12 @@ module.exports = {
     localStorage.removeItem('role');
   },
   isLogin: function() {
-    return this.getUserId() ? true : false;
+    return localStorage.getItem('user-id') ? true : false;
   },
   isLogout: function() {
-    return !this.isLogin();
+    return localStorage.getItem('user-id') ? false : true;
+  },
+  isAdmin: function() {
+    return localStorage.removeItem('role') === 'admin';
   }
 };

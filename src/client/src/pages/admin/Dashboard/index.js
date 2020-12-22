@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Table } from 'reactstrap';
-
 import { FaCircle } from 'react-icons/fa'
+
 import SocketContext from '../../../contexts/SocketContext';
 
 function Dashboard() {

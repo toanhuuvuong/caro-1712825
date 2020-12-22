@@ -9,7 +9,7 @@ const authorizationTypes = {
 
 export default {
   authorizationTypes: authorizationTypes,
-  getAuthorizationInRoom: (room) => {
+  getAuthorizationInRoom: function(room) {
     const userId = authenticationService.getUserId();
     if(!userId) {
       return authorizationTypes.GUEST;
@@ -28,7 +28,7 @@ export default {
     }
     return authorizationTypes.GUEST;
   },
-  getPlayer: (room) => {
+  getPlayer: function(room) {
     const userId = authenticationService.getUserId();
     if(!userId) {
       return null;
