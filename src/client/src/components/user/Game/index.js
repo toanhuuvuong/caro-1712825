@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Button, Input, Label } from 'reactstrap';
+import { Button, Input, Label, Row, Col } from 'reactstrap';
 
 import Board from '../Board';
 import SocketContext from '../../../contexts/SocketContext';
@@ -185,10 +185,10 @@ function Game({roomId, room, player, col, row, history, isAsc, stepNumber, xIsNe
   const winner = calculateWinner(col, current.squares);
   const moves = newHistory.map(step => {
     const desc = (step.move !== 0) 
-    ? 'Go to move #' + step.move + ' & Location (' 
+    ? 'Move #' + step.move + ' & Location (' 
     + Number.parseInt(step.location / col) + ', ' 
     + step.location % col + ')' 
-    : 'Go to game start';
+    : 'Game start';
     const className = (step.move === stepNumber) ? 'move-selected' : 'move';
 
     return(
@@ -214,71 +214,77 @@ function Game({roomId, room, player, col, row, history, isAsc, stepNumber, xIsNe
 
   return (
     <div className="game">
-      <div className="game-board">
-        <Board col={col}
-        row={row}
-        squares={current.squares} 
-        onClick={(i) => handleClick(i)} />
-      </div>
-      <div className="game-info">
-        <div>{status}</div>
-        <ol>{moves}</ol>
-      </div>
-      <div className="game-option">
-        <div>Option</div>
-        <ol>
-          <li>
-            <div>Sort</div>
-            <div>
-              { isAsc && 
-                <Input type="radio" name="sort" value="asc" 
-                checked
-                onClick={() => sort('asc')} />
-              }
-              {!isAsc && 
-                <Input type="radio" name="sort" value="asc" 
-                onClick={() => sort('asc')} />
-              }
-              <Label>Ascending</Label>
-              
-              <br />
+      <Row>
+        <Col lg={8}>
+          <div className="game-board">
+            <Board col={col}
+            row={row}
+            squares={current.squares} 
+            onClick={(i) => handleClick(i)} />
+          </div>
+        </Col>
+        <Col lg={4}>
+          <div className="game-info">
+            <div>{status}</div>
+            <ol>{moves}</ol>
+          </div>
+          <div className="game-option">
+            <div>Option</div>
+            <ol>
+              <li>
+                <div>Sort</div>
+                <div>
+                  { isAsc && 
+                    <Input type="radio" name="sort" value="asc" 
+                    checked
+                    onClick={() => sort('asc')} />
+                  }
+                  {!isAsc && 
+                    <Input type="radio" name="sort" value="asc" 
+                    onClick={() => sort('asc')} />
+                  }
+                  <Label>Ascending</Label>
+                  
+                  <br />
 
-              {isAsc && 
-                <Input type="radio" name="sort" value="desc"
-                onClick={() => sort('desc')} />
-              }
-              {!isAsc && 
-                <Input type="radio" name="sort" value="desc"
-                checked
-                onClick={() => sort('desc')} />
-              }
-              <Label>Descending</Label>
-            </div>
-          </li>
-          <li>
-            <div>Board size</div>
-            <div>
-              <Label>Column:</Label>
-              <br />
-              <Input type="number" 
-              defaultValue={col}
-              value={colInput} 
-              onChange={handleColInputChange} />
+                  {isAsc && 
+                    <Input type="radio" name="sort" value="desc"
+                    onClick={() => sort('desc')} />
+                  }
+                  {!isAsc && 
+                    <Input type="radio" name="sort" value="desc"
+                    checked
+                    onClick={() => sort('desc')} />
+                  }
+                  <Label>Descending</Label>
+                </div>
+              </li>
+              <li>
+                <div>Board size</div>
+                <div>
+                  <Label>Column:</Label>
+                  <br />
+                  <Input type="number" 
+                  defaultValue={col}
+                  value={colInput} 
+                  onChange={handleColInputChange} />
 
-              <Label>Row:</Label>
-              <br />
-              <Input type="number" 
-              defaultValue={row}
-              value={rowInput}
-              onChange={handleRowInputChange} />
+                  <Label>Row:</Label>
+                  <br />
+                  <Input type="number" 
+                  defaultValue={row}
+                  value={rowInput}
+                  onChange={handleRowInputChange} />
 
-              <br />
+                  <br />
 
-              <Button onClick={changeBoardSize}>Change</Button>
-            </div>
-          </li>
-        </ol>
-      </div>
+                  <Button onClick={changeBoardSize}>Change</Button>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </Col>
+      </Row>
     </div>
   );
 }

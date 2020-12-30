@@ -7,6 +7,7 @@ import {
 
 import Notification from '../../../components/common/Notification';
 import AsteriskIcon from '../../../components/common/AsteriskIcon';
+import Breadcumbs from '../../../components/user/Breadcumbs';
 import changePasswordAPI from '../../../api/user/change-password';
 
 function ChangePassword() {
@@ -39,44 +40,47 @@ function ChangePassword() {
   };
 
   return (
-    <Card body className="col-sm-6 card text-center">
-      <h1>Change Password Form</h1>
+    <>
+      <Breadcumbs currentItem="Change password" />
+      <Card body className="col-sm-6 card text-center">
+        <h1>Change Password Form</h1>
 
-      <Notification color={alertColor} 
-      isOpen={alertIsOpen} 
-      messages={messages} />
+        <Notification color={alertColor} 
+        isOpen={alertIsOpen} 
+        messages={messages} />
 
-      <Form className="change-password-form">
-        <FormGroup row className="text-right">
-          <Label for="password" sm={3}>
-            Password <AsteriskIcon />
-          </Label>
-          <Col sm={9}>
-            <Input type="password"
-            id="password"
-            placeholder="Nhập mật khẩu mới..."
-            value={passwordInput}
-            onChange={handlePasswordInputChange}></Input>
-          </Col>
-        </FormGroup>
+        <Form className="change-password-form">
+          <FormGroup row className="text-right">
+            <Label for="password" sm={3}>
+              Password <AsteriskIcon />
+            </Label>
+            <Col sm={9}>
+              <Input type="password"
+              id="password"
+              placeholder="Nhập mật khẩu mới..."
+              value={passwordInput}
+              onChange={handlePasswordInputChange}></Input>
+            </Col>
+          </FormGroup>
 
-        <FormGroup row className="text-right">
-          <Label for="password2" sm={3}>
-            Password Against <AsteriskIcon />
-          </Label>
-          <Col sm={9}>
-            <Input type="password"
-            id="password2"
-            placeholder="Nhập lại mật khẩu..."
-            value={password2Input}
-            onChange={handlePassword2InputChange}></Input>
-          </Col>
-        </FormGroup>
-        
-        <Button className="col-sm-6" 
-        onClick={handleChangeButtonOnClick}>Change</Button>
-      </Form>
-    </Card>
+          <FormGroup row className="text-right">
+            <Label for="password2" sm={3}>
+              Password Against <AsteriskIcon />
+            </Label>
+            <Col sm={9}>
+              <Input type="password"
+              id="password2"
+              placeholder="Nhập lại mật khẩu..."
+              value={password2Input}
+              onChange={handlePassword2InputChange}></Input>
+            </Col>
+          </FormGroup>
+          
+          <Button className="col-sm-6" 
+          onClick={handleChangeButtonOnClick}>Change</Button>
+        </Form>
+      </Card>
+    </>
   );
 }
 

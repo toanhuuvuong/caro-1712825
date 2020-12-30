@@ -39,7 +39,7 @@ function Menu() {
     <div className="menu">
       <Router>
         <div>
-          <Navbar color="light" light expand="md">
+          <Navbar color="light" light expand="sm">
             <Nav className="container-fluid" navbar>
               { isLogin &&
               <NavItem>

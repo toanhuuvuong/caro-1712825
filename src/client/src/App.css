@@ -35,7 +35,6 @@ ol, ul {
 
 .square:focus {
   outline: none;
-  background-color: orange;
 }
 
 .square:hover {
@@ -53,9 +52,7 @@ ol, ul {
 }
 
 .game-room {
-  display: flex;
-  flex-direction: row;
-  padding: 0px 10px;
+  padding: 0px 15px;
 }
 
 .game-room-section {
@@ -85,9 +82,7 @@ ol, ul {
 }
 
 .card {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 50px;
+  margin: 50px auto;
 }
 
 .avatar {
@@ -128,12 +123,12 @@ body {
 	margin: 20px;
 }
 
-ul {
-	list-style: none;
+a {
+	text-decoration: none !important;
 }
 
-a {
-	text-decoration: none;
+ol {
+  margin: 0px !important;
 }
 
 /* Chat Page */

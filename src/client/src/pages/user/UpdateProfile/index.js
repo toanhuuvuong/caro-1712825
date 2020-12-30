@@ -8,6 +8,7 @@ import {
 import defaultAvatar from './images/default-avatar.png';
 import Notification from '../../../components/common/Notification';
 import AsteriskIcon from '../../../components/common/AsteriskIcon';
+import Breadcumbs from '../../../components/user/Breadcumbs';
 import updateProfileAPI from '../../../api/user/update-profile';
 import userAPI from '../../../api/common/user';
 import authenticationService from '../../../services/authentication';
@@ -51,60 +52,63 @@ function UpdateProfile() {
 
   // --- Render
   return (
-    <Card body className="col-sm-6 card text-center">
-      <h1>Update Profile Form</h1>
+    <>
+      <Breadcumbs currentItem="Update profile" />
+      <Card body className="col-sm-6 card text-center">
+        <h1>Update Profile Form</h1>
 
-      <Notification color={alertColor} 
-      isOpen={alertIsOpen} 
-      messages={messages} />
+        <Notification color={alertColor} 
+        isOpen={alertIsOpen} 
+        messages={messages} />
 
-      <Form className="update-profile-form">
-        <FormGroup row>
-          <img src={defaultAvatar} 
-          className="avatar"
-          width="200px" alt="Avatar" />
-        </FormGroup>
-        <FormGroup row className="text-right">
-          <Label for="username" sm={3}>
-            Username
-          </Label>
-          <Col sm={9}>
-            <Input type="search"
-            id="username"
-            value={user && user.username}
-            readOnly></Input>
-          </Col>
-        </FormGroup>
+        <Form className="update-profile-form">
+          <FormGroup row>
+            <img src={defaultAvatar} 
+            className="avatar"
+            width="200px" alt="Avatar" />
+          </FormGroup>
+          <FormGroup row className="text-right">
+            <Label for="username" sm={3}>
+              Username
+            </Label>
+            <Col sm={9}>
+              <Input type="search"
+              id="username"
+              value={user && user.username}
+              readOnly></Input>
+            </Col>
+          </FormGroup>
 
-        <FormGroup row className="text-right">
-          <Label for="name" sm={3}>
-            Name <AsteriskIcon />
-          </Label>
-          <Col sm={9}>
-            <Input type="search"
-            id="name"
-            placeholder="Nhập họ tên..."
-            value={nameInput}
-            onChange={handleNameInputChange}></Input>
-          </Col>
-        </FormGroup>
+          <FormGroup row className="text-right">
+            <Label for="name" sm={3}>
+              Name <AsteriskIcon />
+            </Label>
+            <Col sm={9}>
+              <Input type="search"
+              id="name"
+              placeholder="Nhập họ tên..."
+              value={nameInput}
+              onChange={handleNameInputChange}></Input>
+            </Col>
+          </FormGroup>
 
-        <FormGroup row className="text-right">
-          <Label for="role" sm={3}>
-            Role
-          </Label>
-          <Col sm={9}>
-            <Input type="search"
-            id="role"
-            value={user && user.role}
-            readOnly></Input>
-          </Col>
-        </FormGroup>
-        
-        <Button className="col-sm-6"
-        onClick={handleUpdateButtonOnClick}>Update</Button>
-      </Form>
-    </Card>
+          <FormGroup row className="text-right">
+            <Label for="role" sm={3}>
+              Role
+            </Label>
+            <Col sm={9}>
+              <Input type="search"
+              id="role"
+              value={user && user.role}
+              readOnly></Input>
+            </Col>
+          </FormGroup>
+          
+          <Button className="col-sm-6"
+          onClick={handleUpdateButtonOnClick}>Update</Button>
+        </Form>
+      </Card>
+    </>
   );
 }
 
