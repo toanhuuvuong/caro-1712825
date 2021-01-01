@@ -8,6 +8,7 @@ import {
 import Login from '../../../pages/common/Login';
 import Logout from '../../../pages/common/Logout';
 import Register from '../../../pages/common/Register';
+import ForgotPassword from '../../../pages/common/ForgotPassword';
 import ForwardRoute from '../../common/ForwardRoute';
 
 import Dashboard from '../../../pages/user/Dashboard';
@@ -87,6 +88,7 @@ function Menu() {
             <ForwardRoute path='/login' component={Login} />
             <PrivateRoute path='/logout' component={Logout} />
             <ForwardRoute path='/register' component={Register} />
+            <ForwardRoute path='/forgot-password' component={ForgotPassword} />
 
             <PrivateRoute path='/dashboard' component={Dashboard} />
             <PrivateRoute path='/update-profile' component={UpdateProfile} />

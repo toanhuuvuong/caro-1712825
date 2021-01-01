@@ -1,6 +1,6 @@
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const securityUtil = require('../utils/security');
 const userBUS = require('../bus/user');
 
 module.exports = {
@@ -12,26 +12,29 @@ module.exports = {
 			if(!user || !user.password) {
 				res.json({ok: false, messageCode: 'not_register'});
 			} else {
-				bcrypt.compare(password, user.password, function(err, isMatch) {
-					if(err) {
+        if(user.isDeleted) {
+          res.json({ok: false, messageCode: 'not_permission'});
+        } else {
+          securityUtil.compare(password, user.password)
+          .then(function(isMatch) {
+            if(isMatch) {
+              const payload = {
+                id: user._id.toString(),
+                username: user.username,
+                name: user.name,
+                role: user.role
+              };
+              const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
+              
+              res.json({ok: true, messageCode: "login_success", token: token, userId: payload.id, role: payload.role});
+            } else {
+              res.json({ok: false, messageCode: 'wrong_password'});
+            }
+          })
+          .catch(function(err) {
             res.json({ok: false, messageCode: 'bcrypt_compare_fail'});
-						throw err;
-					}
-
-					if(isMatch) {
-						const payload = {
-              id: user._id.toString(),
-              username: user.username,
-              name: user.name,
-              role: user.role
-						};
-						const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
-            
-						res.json({ok: true, messageCode: "login_success", token: token, userId: payload.id, role: payload.role});
-					} else {
-						res.json({ok: false, messageCode: 'wrong_password'});
-					}
-				});
+          });
+        }
 			}
     })
     .catch(function(err) {

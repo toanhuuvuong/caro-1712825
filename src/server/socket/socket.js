@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 
 const manageOnlineUsers = require('./mange-online-users');
 const manageRooms = require('./mange-rooms');
-const mangeRooms = require('./mange-rooms');
 const formatMessage = require('./format-message');
 
 module.exports = function(server) {
@@ -120,7 +119,7 @@ module.exports = function(server) {
     // --- Update game state
     socket.on('update game state', ({roomId, fields}, callback) => {
       if(user) {
-        const room = mangeRooms.updateGameState(roomId, fields);
+        const room = manageRooms.updateGameState(roomId, fields);
         if(room) {
           console.log(user.username, 'updated Game State:', roomId);
           console.log(user.username, 'updated Fields:', fields);
@@ -149,7 +148,7 @@ module.exports = function(server) {
     // --- User leave room
     socket.on('leave room', function({roomId, userId}, callback) {
       if(user && user.id === userId) {
-        const room = mangeRooms.leaveRoom(roomId, userId);
+        const room = manageRooms.leaveRoom(roomId, userId);
         if(room) {
           console.log(' ++', user.username , 'left Room:', roomId);
 
@@ -179,7 +178,7 @@ module.exports = function(server) {
         // Update list online users
         io.emit('online users', manageOnlineUsers.getOnlineUsers());
 
-        const room = mangeRooms.leaveRooms(userId);
+        const room = manageRooms.leaveRooms(userId);
         if(room) {
           console.log(' ++', user.username , 'left Room:', room.id);
 

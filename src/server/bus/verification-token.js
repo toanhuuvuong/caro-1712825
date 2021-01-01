@@ -1,17 +1,19 @@
 const mongodb = require("mongodb");
 
-const userDAO = require('../dao/user');
+const verificationTokenDAO = require('../dao/verification-token');
 
 const ObjectId = mongodb.ObjectId;
+
+const EXPIRATION = 24 * 60 * 60 * 1000;
 
 module.exports = {
 	findAll: function() {
     return new Promise(function(resolve, reject) {
       const query = {};
 
-      userDAO.find(query)
-      .then(function(users) {
-        return resolve(users);
+      verificationTokenDAO.find(query)
+      .then(function(verificationTokens) {
+        return resolve(verificationTokens);
       })
       .catch(function(err) {
         return reject(err);
@@ -22,82 +24,66 @@ module.exports = {
     return new Promise(function(resolve, reject) {
       const query = {_id: ObjectId(id)};
 
-      userDAO.find(query)
-      .then(function(users) {
-        if(!users || users.length === 0) {
+      verificationTokenDAO.find(query)
+      .then(function(verificationTokens) {
+        if(!verificationTokens || verificationTokens.length === 0) {
           return resolve(null);
         }
 
-        return resolve(users[0]);
-      })
-      .catch(function(err) {
-        return reject(err);
-      });
-    });
-	},
-	findByUsername: function(username) {
-    return new Promise(function(resolve, reject) {
-      const query = {username: username};
-
-      userDAO.find(query)
-      .then(function(users) {
-        if(!users || users.length === 0) {
-          return resolve(null);
-        }
-
-        return resolve(users[0]);
-      })
-      .catch(function(err) {
-        return reject(err);
-      });
-    });
-  }, 
-  findByGoogleId: function(googleId) {
-    return new Promise(function(resolve, reject) {
-      const query = {googleId: googleId};
-
-      userDAO.find(query)
-      .then(function(users) {
-        if(!users || users.length === 0) {
-          return resolve(null);
-        }
-
-        return resolve(users[0]);
+        return resolve(verificationTokens[0]);
       })
       .catch(function(err) {
         return reject(err);
       });
     });
   },
-  findByFacebookId: function(facebookId) {
+  findByCode: function(code) {
     return new Promise(function(resolve, reject) {
-      const query = {facebookId: facebookId};
+      const query = {code: code};
 
-      userDAO.find(query)
-      .then(function(users) {
-        if(!users || users.length === 0) {
+      verificationTokenDAO.find(query)
+      .then(function(verificationTokens) {
+        if(!verificationTokens || verificationTokens.length === 0) {
           return resolve(null);
         }
 
-        return resolve(users[0]);
+        return resolve(verificationTokens[0]);
       })
       .catch(function(err) {
         return reject(err);
       });
     });
 	},
+	findByUserId: function(userId) {
+    return new Promise(function(resolve, reject) {
+      const query = {userId: userId};
+
+      verificationTokenDAO.find(query)
+      .then(function(verificationTokens) {
+        if(!verificationTokens || verificationTokens.length === 0) {
+          return resolve(null);
+        }
+
+        return resolve(verificationTokens[0]);
+      })
+      .catch(function(err) {
+        return reject(err);
+      });
+    });
+  },
 	insertOne: function(model) {
     return new Promise(function(resolve, reject) {
       const newValue = {
         ...model,
-        isDeleted: true,
+        expiryDate: Date.now() + EXPIRATION,
+        isDeleted: false,
         createdDate: null,
         createdBy: 'Unknown',
         modifiedDate: null,
         modifiedBy: 'Unknown'
       };
 
-      userDAO.insertOne(newValue)
+      verificationTokenDAO.insertOne(newValue)
       .then(function(result) {
         if(result.result.ok !== 1) {
           return resolve(null);
@@ -117,7 +103,7 @@ module.exports = {
         $set: model
       };
 
-      userDAO.update(query, newValue)
+      verificationTokenDAO.update(query, newValue)
       .then(function(result) {
         return resolve(result);
       })
@@ -130,7 +116,7 @@ module.exports = {
     return new Promise(function(resolve, reject) {
       const query = {_id: ObjectId(id)};
 
-      userDAO.deleteOne(query)
+      verificationTokenDAO.deleteOne(query)
       .then(function(result) {
         return resolve(result);
       })

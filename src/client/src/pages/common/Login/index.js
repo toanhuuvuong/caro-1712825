@@ -103,6 +103,12 @@ function Login() {
             onChange={handlePasswordInputChange}></Input>
           </Col>
         </FormGroup>
+
+        <FormGroup row className="text-right">
+          <Col sm={12}>
+            <a href='/forgot-password'>Forgot password?</a>
+          </Col>
+        </FormGroup>
         
         <ButtonGroup vertical className="col-sm-6">
           <Button onClick={handleLoginButtonOnClick}>Login</Button>

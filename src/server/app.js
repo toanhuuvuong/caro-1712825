@@ -18,6 +18,8 @@ require('./config/passport')(passport);
 const userRouter = require('./routes/user');
 const loginRouter = require('./routes/login');
 const registerRouter = require('./routes/register');
+const emailConfirmationRouter = require('./routes/email-confirmation');
+const forgotPasswordRouter = require('./routes/forgot-password');
 const authRouter = require('./routes/auth');
 // User routes
 const updateProfileRouter = require('./routes/user/update-profile');
@@ -77,6 +79,8 @@ app.use(function(req, res, next) {
 app.use('/users', userRouter);
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
+app.use('/email-confirmation', emailConfirmationRouter);
+app.use('/forgot-password', forgotPasswordRouter);
 app.use('/auth', authRouter);
 // User URL
 app.use('/update-profile', updateProfileRouter);

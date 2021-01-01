@@ -1,3 +1,5 @@
+const systemConstant = require('../config/constant');
+
 /*const rooms = [
   {id: null, xPlayer: null, oPlayer: null, viewers: [], gameState: {}}
 ];*/
@@ -67,11 +69,11 @@ module.exports = {
       oPlayer: null,
       viewers: [],
       gameState: {
-        col: 3,
-        row: 3,
+        col: systemConstant.gameStateDefault.COL,
+        row: systemConstant.gameStateDefault.ROW,
         history: [{
           move: 0,
-          squares: Array(9).fill(null),
+          squares: Array(systemConstant.gameStateDefault.COL * systemConstant.gameStateDefault.ROW).fill(null),
           location: null
         }],
         isAsc: true,
