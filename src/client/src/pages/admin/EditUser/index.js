@@ -4,45 +4,52 @@ import {
   Label, Col,
   Button, Card
 } from 'reactstrap';
+import { useParams } from 'react-router-dom';
+
+import './css/style.css';
 
 import defaultAvatar from './images/default-avatar.png';
 import Notification from '../../../components/common/Notification';
-import AsteriskIcon from '../../../components/common/AsteriskIcon';
 import Breadcrumbs from '../../../components/admin/Breadcrumbs';
-import updateProfileAPI from '../../../api/admin/update-profile';
+import editUserAPI from '../../../api/admin/edit-user';
 import userAPI from '../../../api/common/user';
 import authenticationService from '../../../services/authentication';
 
-function UpdateProfile() {
+function EditUser() {
+  // --- Params
+  const { userId } = useParams();
+
+  // Varibles
+  const areYourSelf = authenticationService.getUserId() === userId;
+
   // --- State
   // Main
   const [user, setUser] = useState({});
+  const [status, setStatus] = useState(false);
   // Notification
   const [messages, setMessages] = useState([]);
   const [alertIsOpen, setAlertIsOpen] = useState(false);
   const [alertColor, setAlertColor] = useState('danger');
-  // Input
-  const [nameInput, setNameInput] = useState('');
 
   // --- Effect hook
   useEffect(() => {
-    userAPI.getById(authenticationService.getUserId())
+    userAPI.getById(userId)
     .then(data => {
       if (data.ok) {
         setUser(data.item);
-        setNameInput(data.item.name);
+        setStatus(data.item.isDeleted);
       }
     });
   }, []);
 
   // --- Handle functions
-  const handleNameInputChange = event => {
-    setNameInput(event.target.value);
+  const handleStatusRadioButtonOnClick = status => {
+    setStatus(status);
   };
 
   const handleUpdateButtonOnClick = event => {
     event.preventDefault();
-    updateProfileAPI.update(nameInput)
+    editUserAPI.update(userId, status)
     .then(data => {
       setAlertIsOpen(true);
       setMessages(data.errors ? data.errors : [data.messageCode]);
@@ -50,12 +57,14 @@ function UpdateProfile() {
     });
   };
 
+
+
   // --- Render
   return (
     <>
-      <Breadcrumbs currentItem="Update profile" />
+      <Breadcrumbs currentItem="User detail" items={[{href: '/admin/list-users', name: 'List users'}]} />
       <Card body className="col-sm-6 card text-center">
-        <h1>Update Profile Form</h1>
+        <h1>User Detail</h1>
 
         <Notification color={alertColor} 
         isOpen={alertIsOpen} 
@@ -81,14 +90,14 @@ function UpdateProfile() {
 
           <FormGroup row className="text-right">
             <Label for="name" sm={3}>
-              Name <AsteriskIcon />
+              Name
             </Label>
             <Col sm={9}>
               <Input type="search"
               id="name"
               placeholder="Nhập họ tên..."
-              value={nameInput}
-              onChange={handleNameInputChange}></Input>
+              value={user && user.name}
+              readOnly></Input>
             </Col>
           </FormGroup>
 
@@ -103,13 +112,45 @@ function UpdateProfile() {
               readOnly></Input>
             </Col>
           </FormGroup>
+
+          <FormGroup row className="text-right">
+            <Label for="is-deleted" sm={3}>
+              Status
+            </Label>
+            <Col className="d-flex" sm={9}>
+              <div className="status-item">
+                { user &&
+                  <Input type="radio" name="is-deleted" 
+                  value={false} defaultChecked={!user.isDeleted} 
+                  onClick={() => handleStatusRadioButtonOnClick(false)} 
+                  disabled={areYourSelf} />
+                }
+                &nbsp;
+                <Label>Active</Label>
+              </div>
+              
+              &nbsp;&nbsp;&nbsp;
+              
+              <div className="status-item">
+                { user &&
+                  <Input type="radio" name="is-deleted" 
+                  value={true} defaultChecked={user.isDeleted}
+                  onClick={() => handleStatusRadioButtonOnClick(true)}
+                  disabled={areYourSelf} />
+                }
+                &nbsp;
+                <Label>Block</Label>
+              </div>
+            </Col>
+          </FormGroup>
           
           <Button className="col-sm-6"
-          onClick={handleUpdateButtonOnClick}>Update</Button>
+          onClick={handleUpdateButtonOnClick}
+          disabled={areYourSelf} >Update</Button>
         </Form>
       </Card>
     </>
   );
 }
 
-export default UpdateProfile;
+export default EditUser;

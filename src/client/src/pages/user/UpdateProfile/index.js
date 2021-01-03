@@ -8,7 +8,7 @@ import {
 import defaultAvatar from './images/default-avatar.png';
 import Notification from '../../../components/common/Notification';
 import AsteriskIcon from '../../../components/common/AsteriskIcon';
-import Breadcumbs from '../../../components/user/Breadcumbs';
+import Breadcrumbs from '../../../components/user/Breadcrumbs';
 import updateProfileAPI from '../../../api/user/update-profile';
 import userAPI from '../../../api/common/user';
 import authenticationService from '../../../services/authentication';
@@ -53,7 +53,7 @@ function UpdateProfile() {
   // --- Render
   return (
     <>
-      <Breadcumbs currentItem="Update profile" />
+      <Breadcrumbs currentItem="Update profile" />
       <Card body className="col-sm-6 card text-center">
         <h1>Update Profile Form</h1>
 

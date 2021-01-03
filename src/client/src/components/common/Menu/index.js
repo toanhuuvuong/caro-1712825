@@ -20,6 +20,8 @@ import PrivateRoute from '../../user/PrivateRoute';
 import AdminDashboard from '../../../pages/admin/Dashboard';
 import AdminUpdateProfile from '../../../pages/admin/UpdateProfile';
 import AdminChangePassword from '../../../pages/admin/ChangePassword';
+import AdminListUser from '../../../pages/admin/ListUser';
+import AdminEditUser from '../../../pages/admin/EditUser';
 import AdminPrivateRoute from '../../admin/PrivateRoute';
 
 import authenticationService from '../../../services/authentication';
@@ -44,9 +46,14 @@ function Menu() {
             <Nav className="container-fluid" navbar>
               { isLogin &&
               <NavItem>
-                <NavLink href={authenticationService.getRole() === "admin" 
+                <NavLink href={isAdmin 
                 ? "/admin/dashboard" 
                 : "/dashboard"}>Dashboard</NavLink>
+              </NavItem>
+              }
+              { isLogin && isAdmin &&
+              <NavItem>
+                <NavLink href="/admin/list-users">Manange users</NavLink>
               </NavItem>
               }
               
@@ -97,6 +104,8 @@ function Menu() {
 
             <AdminPrivateRoute path='/admin/dashboard' component={AdminDashboard} />
             <AdminPrivateRoute path='/admin/update-profile' component={AdminUpdateProfile} />
+            <AdminPrivateRoute path='/admin/list-users' component={AdminListUser} />
+            <AdminPrivateRoute path='/admin/edit-user/:userId' component={AdminEditUser} />
             <AdminPrivateRoute path='/admin/change-password' component={AdminChangePassword} />
 
             <PrivateRoute path='/' component={Dashboard} />

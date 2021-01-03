@@ -27,6 +27,7 @@ const changePasswordRouter = require('./routes/user/change-password');
 // Admin routes
 const adminUpdateProfileRouter = require('./routes/admin/update-profile');
 const adminChangePasswordRouter = require('./routes/admin/change-password');
+const adminEditUserRouter = require('./routes/admin/edit-user');
 
 const app = express();
 
@@ -88,5 +89,6 @@ app.use('/change-password', changePasswordRouter);
 // Admin URL
 app.use('/admin/update-profile', adminUpdateProfileRouter);
 app.use('/admin/change-password', adminChangePasswordRouter);
+app.use('/admin/edit-user', adminEditUserRouter);
 
 module.exports = app;

@@ -29,6 +29,6 @@ export default {
     return localStorage.getItem('user-id') ? false : true;
   },
   isAdmin: function() {
-    return localStorage.removeItem('role') === 'admin';
+    return localStorage.getItem('role') === 'admin';
   }
 };

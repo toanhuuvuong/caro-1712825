@@ -7,7 +7,7 @@ import {
 
 import Notification from '../../../components/common/Notification';
 import AsteriskIcon from '../../../components/common/AsteriskIcon';
-import Breadcumbs from '../../../components/user/Breadcumbs';
+import Breadcrumbs from '../../../components/user/Breadcrumbs';
 import changePasswordAPI from '../../../api/user/change-password';
 
 function ChangePassword() {
@@ -41,7 +41,7 @@ function ChangePassword() {
 
   return (
     <>
-      <Breadcumbs currentItem="Change password" />
+      <Breadcrumbs currentItem="Change password" />
       <Card body className="col-sm-6 card text-center">
         <h1>Change Password Form</h1>
 

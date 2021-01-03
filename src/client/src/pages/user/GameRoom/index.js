@@ -4,13 +4,13 @@ import { Button, Input, Col, Row } from 'reactstrap';
 
 import SocketContext from '../../../contexts/SocketContext';
 import Game from '../../../containers/user/Game';
-import Breadcumbs from '../../../components/user/Breadcumbs';
+import Breadcrumbs from '../../../components/user/Breadcrumbs';
 import GameInfo from './GameInfo';
 import GameTabs from './GameTabs';
 import authenticationService from '../../../services/authentication';
 import systemContant from '../../../config/constant';
 
-function GameRoom({room, player, actions}) {
+function GameRoom({room, player, col, row, history, isAsc, stepNumber, xIsNext, didFindWinner, actions}) {
   // --- Params
   const { roomId } = useParams();
 
@@ -62,13 +62,15 @@ function GameRoom({room, player, actions}) {
         content: messageInput
       }, () => {
         setMessageInput('');
+        const chatMessages = document.getElementById('chat-messages');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
       });
     }
   };
 
   return(
     <div>
-      <Breadcumbs currentItem="Game room" />
+      <Breadcrumbs currentItem="Game room" />
       <div className="game-room">
         <Row>
           <Col lg={8} className="game-play">
@@ -78,35 +80,18 @@ function GameRoom({room, player, actions}) {
           <Col lg={4} className="game-settings">
             <hr />
             <GameInfo room={room} player={player} />
-            <GameTabs room={room} player={player} actions={actions} />
             <hr />
-            <div class="chat-container">
-              <header class="chat-header">
-                <h3>Chat form</h3>
-              </header>
-              <main class="chat-main">
-                <div class="chat-sidebar"></div>
-                <div class="chat-messages">
-                  <ul>
-                  {
-                    chatMessages && chatMessages.map(message => {
-                      return <li>{message.username} - {message.time}: {message.content}</li>
-                    })
-                  }
-                  </ul>
-                </div>
-              </main>
-              <div class="chat-form-container">
-                <form id="chat-form">
-                  <div className="chat-form d-flex">
-                    <Input placeholder="Nhập tin nhắn..."
-                    value={messageInput}
-                    onChange={handleMessageInputChange}></Input>
-                    <Button onClick={handleSendButtonOnClick}>Send</Button>
-                  </div>
-                </form>
-              </div>
-            </div>
+            <GameTabs room={room} 
+            player={player} 
+            col={col} 
+            row={row}
+            history={history} 
+            isAsc={isAsc} 
+            stepNumber={stepNumber}
+            xIsNext={xIsNext}
+            didFindWinner={didFindWinner}
+            actions={actions} /> 
+            <hr />  
           </Col>
         </Row>
       </div>      

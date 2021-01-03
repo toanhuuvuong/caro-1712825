@@ -39,7 +39,6 @@ function GameInfo({room, player}) {
         <Col lg={6}><PlayerCard isXPlayer={true} player={room && room.xPlayer} /></Col>
         <Col lg={6}><PlayerCard isXPlayer={false} player={room && room.oPlayer} /></Col>
       </Row>
-      <hr />
     </>
   );
 }
