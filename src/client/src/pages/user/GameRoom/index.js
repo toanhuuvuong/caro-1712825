@@ -9,6 +9,7 @@ import GameInfo from './GameInfo';
 import GameTabs from './GameTabs';
 import authenticationService from '../../../services/authentication';
 import systemContant from '../../../config/constant';
+import OnlineUsersWindow from '../../../components/user/OnlineUsersWindow';
 
 function GameRoom({room, player, col, row, history, isAsc, stepNumber, xIsNext, didFindWinner, actions}) {
   // --- Params
@@ -71,13 +72,15 @@ function GameRoom({room, player, col, row, history, isAsc, stepNumber, xIsNext, 
   return(
     <div>
       <Breadcrumbs currentItem="Game room" />
+      <OnlineUsersWindow room={room} />
       <div className="game-room">
         <Row>
-          <Col lg={8} className="game-play">
+          <Col lg={7} className="game-play">
             <hr />
             <Game roomId={roomId} />
+            <hr />
           </Col>
-          <Col lg={4} className="game-settings">
+          <Col lg={5} className="game-settings">
             <hr />
             <GameInfo room={room} player={player} />
             <hr />

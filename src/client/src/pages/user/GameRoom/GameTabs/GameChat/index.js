@@ -1,20 +1,18 @@
-import React, { useEffect, useContext, useState, useRef } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Input, Col, Row } from 'reactstrap';
+import { Button, Input } from 'reactstrap';
 
 import './css/style.css';
 
 import SocketContext from '../../../../../contexts/SocketContext';
+import authenticationService from '../../../../../services/authentication';
 
-function GameChat({player}) {
+function GameChat() {
   // --- Params
   const { roomId } = useParams();
 
   // --- Context
   const socket = useContext(SocketContext);
-
-  // --- Ref
-  const chatMsg = useRef([]);
 
   // --- State
   // Main
@@ -24,11 +22,12 @@ function GameChat({player}) {
 
   // --- Effect hook
   useEffect(() => {
-    socket.on('get message', message => {
-      if(message) {
-        chatMsg.current = [...chatMsg.current, message]
-        setChatMessages(chatMsg.current);
-      }
+    socket.emit('get messages', roomId);
+    socket.on('get messages', messages => {
+      setChatMessages(messages);
+      // Scroll chat
+      const chatMessages = document.getElementById('chat-messages');
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     });
   }, []);
 
@@ -59,9 +58,9 @@ function GameChat({player}) {
         {
           chatMessages && chatMessages.map((message, index) => {
             return (
-            <div key={index} className={"message" + (player && player.username === message.username ? " myself" : "")}>
+            <div key={index} className={"message" + (authenticationService.getUserId() === message.user.id ? " myself" : "")}>
               <p className="meta d-flex justify-content-between">
-                <div>{message.username}</div>
+                <div>{message.user.username}</div>
                 <div>{message.time}</div>
               </p>
               <p className="text">{message.content}</p>
@@ -72,10 +71,10 @@ function GameChat({player}) {
         </ul>
       </div>
       <div class="d-flex">
+        <Button onClick={handleSendButtonOnClick}>Send</Button>
         <Input placeholder="Nhập tin nhắn..."
         value={messageInput}
-        onChange={handleMessageInputChange}></Input>
-        <Button onClick={handleSendButtonOnClick}>Send</Button>
+        onChange={handleMessageInputChange}></Input>  
       </div>
     </>
   );

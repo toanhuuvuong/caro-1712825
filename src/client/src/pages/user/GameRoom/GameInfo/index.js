@@ -30,14 +30,19 @@ function GameInfo({room, player}) {
   return(
     <>
       <div className="d-flex justify-content-between">
-        <h6>Room #1{room && true}</h6>
+        <div>
+          <h5>Room {room && room.name}</h5>
+          <div>ID: {room && room.id}</div>
+          {room && room.type === 'private' && <div>Password: {room && room.password}</div>}
+        </div>
+        
         <Button color="danger"
         onClick={handleLeaveRoomButtonOnClick}>Leave Room</Button>  
       </div>
       <hr />
       <Row>
-        <Col lg={6}><PlayerCard isXPlayer={true} player={room && room.xPlayer} /></Col>
-        <Col lg={6}><PlayerCard isXPlayer={false} player={room && room.oPlayer} /></Col>
+        <Col lg={6}><PlayerCard isXPlayer={true} player={room && room.xPlayer} timeout={room && room.timeout} /></Col>
+        <Col lg={6}><PlayerCard isXPlayer={false} player={room && room.oPlayer} timeout={room && room.timeout} /></Col>
       </Row>
     </>
   );

@@ -4,20 +4,20 @@ import './css/style.css';
 
 import playerAvatar from './images/default-avatar.png';
 
-function PlayerCard({isXPlayer, player}) {
+function PlayerCard({isXPlayer, player, timeout}) {
   return(
-    <div>
-      <div className="player-card bg-dark text-white">
+    <>
+      <div className="player-header bg-dark text-white">
         {isXPlayer && <FaTimes fill="red" />} 
         {!isXPlayer && <FaCircleNotch fill="green" />} 
         {player && player.username}
       </div>
-      <div className="player-card bg-white">
+      <div className="player-body bg-white">
         <img className="rounded-circle" src={playerAvatar} atl="player-avatar" width="60px" height="60px" />
         <br /><br />
-        <div><FaClock /> 7:00</div>
+        <div><FaClock /> {timeout}:00</div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -120,7 +120,7 @@ function Game({roomId, room, player, col, row, history, isAsc, stepNumber, xIsNe
       <hr />
       <Row>
         <Col lg={12}>
-          <div className="game-board">
+          <div className="d-flex justify-content-center">
             <Board col={col}
             row={row}
             squares={current.squares} 

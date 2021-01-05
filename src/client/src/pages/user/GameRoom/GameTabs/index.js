@@ -57,7 +57,7 @@ function GameTabs({room, player, col, row, history, isAsc, stepNumber, xIsNext, 
         <TabPane tabId="1">
           <Row>
             <Col lg="12">
-              <GameChat player={player} />
+              <GameChat />
             </Col>
           </Row>
         </TabPane>

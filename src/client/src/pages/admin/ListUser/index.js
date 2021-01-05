@@ -39,10 +39,12 @@ function ListUser() {
       setKeySearchInput('');
     }
   };
+
   const handleRefreshButtonOnClick = event => {
     event.preventDefault();
     window.open(window.location.href, '_self')
   };
+  
   const handleDetailButtonOnClick = id => {
     window.open(systemConstant.CLIENT_URL + '/admin/edit-user/' + id, '_self')
   };
@@ -73,8 +75,10 @@ function ListUser() {
             </tr>
           </thead>
           <tbody>
-          {
-            (!users || users.length === 0) && <tr>No one, please refresh table for the next search :(</tr>
+          {(!users || users.length === 0) &&
+            <tr>
+              <td colspan={5}>No one, please refresh table for the next search :(</td>
+            </tr>
           }
           {
             users && users.map((item, index) => {

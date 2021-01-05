@@ -1,7 +1,7 @@
 const systemConstant = require('../config/constant');
 
 /*const rooms = [
-  {id: null, xPlayer: null, oPlayer: null, viewers: [], gameState: {}}
+  {id: null, xPlayer: null, oPlayer: null, viewers: [], gameState: {}, chatMessages: []}
 ];*/
 const rooms = [];
 
@@ -23,9 +23,14 @@ const isInAnyRooms = function(userId) {
   return null;
 };
 
+const isInOtherRooms = function(userId, roomId) {
+  const room = isInAnyRooms(userId);
+  return (room && room.id !== roomId); 
+};
+
 module.exports = {
-  joinRoom: function(roomId, user) {
-    if(!user || isInAnyRooms(user.id)) {
+  joinRoom: function(roomId, user, settings) {
+    if(!user || isInOtherRooms(user.id, roomId)) {
       return null;
     }
     const iRoom = rooms.findIndex(function(item) {
@@ -34,6 +39,10 @@ module.exports = {
     if (iRoom !== -1) {
       const room = rooms[iRoom];
 
+      if(room.type === 'private' && room.password !== settings.password) {
+        return null;
+      }
+
       // Find xPlayer
       if(!room.xPlayer) {
         room.xPlayer = user;
@@ -41,7 +50,7 @@ module.exports = {
       }
       // User is xPlayer
       if(room.xPlayer.id === user.id) {
-        return null;
+        return room;
       }
       // Find oPlayer
       if(!room.oPlayer) {
@@ -50,7 +59,7 @@ module.exports = {
       }
       // User is oPlayer
       if(room.oPlayer.id === user.id) {
-        return null;
+        return room;
       }
       const iViewer = room.viewers.findIndex(function(item) {
         return item.id === user.id
@@ -58,13 +67,18 @@ module.exports = {
 
       if(iViewer !== -1) {
         room.viewers[iViewer] = user;
-        return null;
+        return room;
       }
       room.viewers.push(user);
       return room;
     }
+    const {type, password, timeout} = settings;
     const newRoom = {
       id: user.id + Date.now(), 
+      name: '#' + (rooms.length + 1),
+      type: type,
+      password: password,
+      timeout: parseInt(timeout),
       xPlayer: user, 
       oPlayer: null,
       viewers: [],
@@ -80,7 +94,9 @@ module.exports = {
         stepNumber: 0,
         xIsNext: true,
         didFindWinner: false
-      }
+      },
+      chatMessages: [],
+      createdDate: Date.now()
     };
     rooms.push(newRoom);
     return newRoom;
@@ -205,5 +221,25 @@ module.exports = {
   },
   getRooms: function() {
     return rooms;
+  },
+  addNewMessage: function(roomId, message) {
+    const iRoom = rooms.findIndex(function(item) {
+      return item.id === roomId
+    });
+    if(iRoom !== -1) {
+      const chatMessages = rooms[iRoom].chatMessages;
+      chatMessages.push(message);
+      return message;
+    }
+    return null;
+  },
+  getMessages: function(roomId) {
+    const iRoom = rooms.findIndex(function(item) {
+      return item.id === roomId
+    });
+    if(iRoom !== -1) {
+      return rooms[iRoom].chatMessages;
+    }
+    return null;
   }
 }

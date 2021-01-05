@@ -60,7 +60,10 @@ module.exports = function(server) {
         console.log(' ++', user.username, 'go to Room:', roomId);
         const room = manageRooms.getRoomById(roomId);
         if(room) {
-          socket.join(roomId); // socket join
+          const userRoom = manageRooms.getRoomByUserId(user.id);
+          if(userRoom && userRoom.id === roomId) {
+            socket.join(roomId); // socket join
+          }
 
           // Send room info
           socket.emit('get room detail', room);
@@ -69,9 +72,14 @@ module.exports = function(server) {
     });
 
     // --- Create new room
-    socket.on('create room', function(userId, callback) {
+    socket.on('create room', function({userId, type, password, timeout}, callback) {
       if(user && user.id === userId) {
-        const newRoom = manageRooms.joinRoom(null, user);
+        const settings = {
+          type: type, 
+          password: password, 
+          timeout: timeout
+        };
+        const newRoom = manageRooms.joinRoom(null, user, settings);
         if(newRoom) {
           console.log(' ++ New Room by:', user.username);
           socket.join(newRoom.id); // socket join
@@ -88,9 +96,13 @@ module.exports = function(server) {
     });
 
     // --- Join room
-    socket.on('join room', function({userId, roomId}, callback) {
+    socket.on('join room', function({userId, roomId, password}, callback) {
       if(user && user.id === userId) {
-        const room = manageRooms.joinRoom(roomId, user);
+        const settings = {
+          password: password
+        };
+        console.log('Password:', password)
+        const room = manageRooms.joinRoom(roomId, user, settings);
         if(room) {
           console.log(' ++', user.username, 'joined Room:', roomId);
           socket.join(roomId); // socket join
@@ -99,7 +111,8 @@ module.exports = function(server) {
           // socket.emit('get message', formatMessage(user.username, 'Wellcome to room ' + roomId + '!'));
 
           // Broardcast when user join room
-          socket.broadcast.to(roomId).emit('get message', formatMessage(user.username, user.username + ' has joined the room!'));
+          manageRooms.addNewMessage(roomId, formatMessage(user, user.username + ' has joined the room!'));
+          socket.broadcast.to(roomId).emit('get messages', manageRooms.getMessages(roomId));
 
           // Update list rooms
           io.emit('get rooms', manageRooms.getRooms());
@@ -135,12 +148,37 @@ module.exports = function(server) {
       if(user) {
         console.log(' ++', user.username, 'new Chat Message:', content);
         if(content) {
-          socket.join(roomId); // socket join
+          const userRoom = manageRooms.getRoomByUserId(user.id);
+          if(userRoom && userRoom.id === roomId) {
+            socket.join(roomId); // socket join
+          }
 
-          // Notify has new message
-          io.to(roomId).emit('get message', formatMessage(user.username, content));
+          const message = manageRooms.addNewMessage(roomId, formatMessage(user, content));
+
+          if(message) {
+            // Notify has new message
+            io.to(roomId).emit('get messages', manageRooms.getMessages(roomId));
+          }
 
           callback();
+        }
+      }
+    });
+
+    socket.on('get messages', function(roomId) {
+      if(user) {
+        if(roomId) {
+          const userRoom = manageRooms.getRoomByUserId(user.id);
+          if(userRoom && userRoom.id === roomId) {
+            socket.join(roomId); // socket join
+          }
+
+          const messages = manageRooms.getMessages(roomId);
+
+          if(messages) {
+            // Notify has new message
+            socket.emit('get messages', messages);
+          }
         }
       }
     });
@@ -153,7 +191,8 @@ module.exports = function(server) {
           console.log(' ++', user.username , 'left Room:', roomId);
 
           // Broardcast when user leave room
-          socket.broadcast.to(roomId).emit('get message', formatMessage(user.username, user.username + ' has left the room!'));
+          manageRooms.addNewMessage(roomId, formatMessage(user, user.username + ' has left the room!'));
+          socket.broadcast.to(roomId).emit('get messages', manageRooms.getMessages(roomId));
 
           // Update list rooms
           io.emit('get rooms', manageRooms.getRooms());
@@ -165,6 +204,16 @@ module.exports = function(server) {
         } else {
           callback({ok: false, messageCode: 'leave_room_fail'});
         }
+      }
+    });
+
+    // --- User invite
+    socket.on('invite', function({from, to, room}) {
+      if(user && user.id === from) {
+        if(room && !manageRooms.getRoomByUserId(to)) {
+          // Broardcast
+          socket.broadcast.emit('receive invition', {from: user, to: to, room: room});
+        } 
       }
     });
 
@@ -183,7 +232,8 @@ module.exports = function(server) {
           console.log(' ++', user.username , 'left Room:', room.id);
 
           // Broardcast when user leave room
-          socket.broadcast.to(room.id).emit('get message', formatMessage(user.username, user.username + ' has left the room!'));
+          manageRooms.addNewMessage(room.id, formatMessage(user, user.username + ' has left the room!'))
+          socket.broadcast.to(room.id).emit('get messages', manageRooms.getMessages(roomId));
 
           // Update list rooms
           io.emit('get rooms', manageRooms.getRooms());

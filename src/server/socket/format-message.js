@@ -1,9 +1,9 @@
 const moment = require('moment');
 
-module.exports = function(username, content) {
+module.exports = function(user, content) {
   return {
-    id: username + Date.now(),
-    username: username,
+    id: user.id + Date.now(),
+    user: user,
     content: content,
     time: moment().format('h:mm a')
   };

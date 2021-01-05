@@ -1,0 +1,74 @@
+/* Button used to open the chat form - fixed at the bottom of the page */
+body {
+  padding: 0px !important;
+}
+
+.open-button {
+  opacity: 0.8;
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  z-index: 5;
+}
+
+/* The popup chat - hidden by default */
+.online-users-popup {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  border: 3px solid lightgray;
+  z-index: 6;
+}
+
+.online-users-list {
+  max-height: 400px;
+  overflow-y: scroll;
+  padding: 0px 15px;
+}
+
+/* Add styles to the form container */
+.form-container {
+  width: 500px;
+  padding: 10px;
+  background-color: white;
+}
+
+/* Full-width textarea */
+.form-container textarea {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+  resize: none;
+  min-height: 200px;
+}
+
+/* When the textarea gets focus, do something */
+.form-container textarea:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+.online-users-item {
+  margin: 10px 0px;
+}
+
+/* Set a style for the submit/send button */
+/*.form-container .btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}*/
+
+/* Add a red background color to the cancel button */
+/*.form-container .cancel {
+  background-color: red;
+}*/
+
+/* Add some hover effects to buttons */
