@@ -10,6 +10,7 @@ function Game({roomId, room, player, col, row, history, isAsc, stepNumber, xIsNe
   const socket = useContext(SocketContext);
 
   // --- State
+  const [areReady, setAreReady] = useState(false);
 
   // -- Effect hook
   useEffect(() => {
@@ -17,8 +18,12 @@ function Game({roomId, room, player, col, row, history, isAsc, stepNumber, xIsNe
   }, []);
 
   // --- Handle functions
+  const handleReadyButtonOnClick = () => {
+    setAreReady(true);
+  };
+
   const handleClick = (i) => {
-    if(!player || !room.xPlayer || !room.oPlayer) {
+    if(!areReady || !player || !room.xPlayer || !room.oPlayer) {
       return;
     }
     if(player.id === room.xPlayer.id && !xIsNext) {
@@ -116,7 +121,11 @@ function Game({roomId, room, player, col, row, history, isAsc, stepNumber, xIsNe
 
   return (
     <>
-      <div>{status}</div>
+      <div className="d-flex">
+        <div>{status}</div>
+        &nbsp;&nbsp;&nbsp;
+        <div hidden={areReady || !player}><Button color="success" onClick={handleReadyButtonOnClick}>Ready</Button></div>
+      </div>
       <hr />
       <Row>
         <Col lg={12}>

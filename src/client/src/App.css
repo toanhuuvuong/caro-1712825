@@ -16,20 +16,40 @@ ol, ul {
   background: #fff;
   border: 1px solid #999;
   float: left;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: bold;
-  line-height: 18px;
-  height: 18px;
+  line-height: 24px;
+  height: 24px;
   margin-right: -1px;
   margin-top: -1px;
   padding: 0;
   text-align: center;
-  width: 18px;
+  width: 24px;
 }
 
 @media screen and (max-width: 360px) {
   .square {
-    display: none;
+    font-size: 8px;
+    line-height: 10px;
+    height: 10px;
+    width: 10px;
+  }
+}
+
+@media screen and (min-width: 375px) and (max-width: 540px) {
+  .square {
+    font-size: 10px;
+    line-height: 12px;
+    height: 12px;
+    width: 12px;
+  }
+}
+@media screen and (min-width: 1024px) and (max-width: 1025px) {
+  .square {
+    font-size: 14px;
+    line-height: 18px;
+    height: 18px;
+    width: 18px;
   }
 }
 

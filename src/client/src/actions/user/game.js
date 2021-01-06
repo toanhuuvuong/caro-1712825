@@ -134,6 +134,8 @@ export function getRoomDetail(socket, roomId) {
         dispatch(actionGetRoomDetail(room));
         dispatch(actionGetPlayer(room));
         dispatch(actionChangeGameState(room.gameState));
+      } else {
+        window.open(systemConstant.CLIENT_URL + '/dashboard', '_self')
       }
     });
   };

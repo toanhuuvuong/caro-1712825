@@ -106,8 +106,8 @@ function OnlineUsersWindow({ room }) {
                   <div>
                     <div className="online-users-item row">
                       <div className="col-lg-7"><FaCircle fill="green" />&nbsp;<span>{item.name}</span></div>
-                      <div className="col-lg-5 d-flex">
-                        <Button color="success" onClick={() => handleInviteButtonOnClick(item.id)}>Invite</Button>
+                      <div className="col-lg-5 d-flex justify-content-end">
+                        <Button hidden={!room} color="success" onClick={() => handleInviteButtonOnClick(item.id)}>Invite</Button>
                         &nbsp;
                         <Button color="primary" onClick={() => handleDetailButtonOnClick(item)}>Detail</Button>
                       </div>

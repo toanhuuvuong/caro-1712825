@@ -9,6 +9,7 @@ import defaultAvatar from './images/default-avatar.png';
 import Notification from '../../../components/common/Notification';
 import AsteriskIcon from '../../../components/common/AsteriskIcon';
 import Breadcrumbs from '../../../components/user/Breadcrumbs';
+import OnlineUsersWindow from '../../../components/user/OnlineUsersWindow';
 import updateProfileAPI from '../../../api/user/update-profile';
 import userAPI from '../../../api/common/user';
 import authenticationService from '../../../services/authentication';
@@ -53,6 +54,7 @@ function UpdateProfile() {
   // --- Render
   return (
     <>
+      <OnlineUsersWindow />
       <Breadcrumbs currentItem="Update profile" />
       <Card body className="col-sm-6 card text-center">
         <h1>Update Profile Form</h1>

@@ -63,10 +63,13 @@ module.exports = function(server) {
           const userRoom = manageRooms.getRoomByUserId(user.id);
           if(userRoom && userRoom.id === roomId) {
             socket.join(roomId); // socket join
+            // Send room info
+            socket.emit('get room detail', room);
+          } else {
+            socket.emit('get room detail', null);
           }
-
-          // Send room info
-          socket.emit('get room detail', room);
+        } else {
+          socket.emit('get room detail', null);
         }
       }
     });
@@ -122,7 +125,7 @@ module.exports = function(server) {
 
           callback({ok: true, messageCode: 'join_room_success', item: room});
         } else {
-          callback({ok: false, messageCode: 'join_room_fail', item: manageRooms.getRoomById(roomId)});
+          callback({ok: false, messageCode: 'wrong_password'});
         }
       } else {
         callback({ok: false, messageCode: 'join_room_fail'});
@@ -151,16 +154,15 @@ module.exports = function(server) {
           const userRoom = manageRooms.getRoomByUserId(user.id);
           if(userRoom && userRoom.id === roomId) {
             socket.join(roomId); // socket join
+            const message = manageRooms.addNewMessage(roomId, formatMessage(user, content));
+
+            if(message) {
+              // Notify has new message
+              io.to(roomId).emit('get messages', manageRooms.getMessages(roomId));
+            }
+
+            callback();
           }
-
-          const message = manageRooms.addNewMessage(roomId, formatMessage(user, content));
-
-          if(message) {
-            // Notify has new message
-            io.to(roomId).emit('get messages', manageRooms.getMessages(roomId));
-          }
-
-          callback();
         }
       }
     });
@@ -171,13 +173,12 @@ module.exports = function(server) {
           const userRoom = manageRooms.getRoomByUserId(user.id);
           if(userRoom && userRoom.id === roomId) {
             socket.join(roomId); // socket join
-          }
+            const messages = manageRooms.getMessages(roomId);
 
-          const messages = manageRooms.getMessages(roomId);
-
-          if(messages) {
-            // Notify has new message
-            socket.emit('get messages', messages);
+            if(messages) {
+              // Notify has new message
+              socket.emit('get messages', messages);
+            }
           }
         }
       }

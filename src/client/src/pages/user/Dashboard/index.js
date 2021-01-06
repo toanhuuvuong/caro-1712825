@@ -10,6 +10,7 @@ import authenticationService from '../../../services/authentication';
 import systemContant from '../../../config/constant';
 import searchEngine from './services/search-engine';
 import OnlineUsersWindow from '../../../components/user/OnlineUsersWindow';
+import Notification from '../../../components/common/Notification';
 
 function Dashboard() {
   // --- Context
@@ -17,7 +18,10 @@ function Dashboard() {
 
   // --- State
   // Main
+  const [messages, setMessages] = useState([]);
+  
   const [rooms, setRooms] = useState([]);
+  const [alertIsOpen, setAlertIsOpen] = useState(false);
   const [roomType, setRoomType] = useState('public');
   const [roomSettingsModal, setRoomSettingsModal] = useState(false);
   const roomSettingsToggle = () => {
@@ -31,6 +35,8 @@ function Dashboard() {
   const roomPasswordToggle = () => {
     setRoomPasswordModal(!roomPasswordModal);
     setPasswordInput('');
+    setMessages([]);
+    setAlertIsOpen(false);
   };
   // Input
   const [passwordInput, setPasswordInput] = useState('');
@@ -94,6 +100,8 @@ function Dashboard() {
     socket.emit('create room', room, data => {
       if(data.ok) {
         window.open(systemContant.CLIENT_URL + '/game-room/' + data.item.id, '_self');
+      } else {
+        roomSettingsToggle();
       }
     });
   };
@@ -109,9 +117,7 @@ function Dashboard() {
         if(data.ok) {
           window.open(systemContant.CLIENT_URL + '/game-room/' + data.item.id, '_self');
         } else {
-          if(data.item) {
-            window.open(systemContant.CLIENT_URL + '/game-room/' + roomId, '_self');
-          }
+          
         }
       });
     } else {
@@ -122,18 +128,24 @@ function Dashboard() {
 
   const handleSubmitButtonOnClick = event => {
     event.preventDefault();
-    const room = {
-      userId: authenticationService.getUserId(),
-      roomId: selectedRoomId,
-      password: passwordInput
-    };
-    socket.emit('join room', room, data => {
-      if(data.ok) {
-        window.open(systemContant.CLIENT_URL + '/game-room/' + data.item.id, '_self');
-      } else {
-        
-      }
-    });
+    if(!passwordInput) {
+      setAlertIsOpen(true);
+      setMessages(['password_required']);
+    } else {
+      const room = {
+        userId: authenticationService.getUserId(),
+        roomId: selectedRoomId,
+        password: passwordInput
+      };
+      socket.emit('join room', room, data => {
+        if(data.ok) {
+          window.open(systemContant.CLIENT_URL + '/game-room/' + data.item.id, '_self');
+        } else {
+          setAlertIsOpen(true);
+          setMessages([data.messageCode]);
+        }
+      });
+    }
   };
 
   return(
@@ -266,6 +278,7 @@ function Dashboard() {
                       <ModalHeader toggle={roomPasswordToggle}>Room Password Require</ModalHeader>
                       <ModalBody>
                         <div id="settings">
+                          <Notification color={"danger"} isOpen={alertIsOpen} messages={messages} />
                           <div>
                             <h6>Password</h6>
                             <div className="col-lg-12">

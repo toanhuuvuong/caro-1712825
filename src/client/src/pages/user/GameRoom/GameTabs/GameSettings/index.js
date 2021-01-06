@@ -21,9 +21,9 @@ function GameSettings({room, player, col, row, history, isAsc, actions}) {
 
   // --- Effect hook
   useEffect(() => {
-    // Scroll top
     setColInput(col);
     setRowInput(row);
+    // Scroll top
     const settings = document.getElementById('settings');
     settings.scrollTop = settings.scrollHeight;
   }, []);
@@ -73,7 +73,8 @@ function GameSettings({room, player, col, row, history, isAsc, actions}) {
     }
     const colNumber = Number.parseInt(newCol);
     const rowNumber = Number.parseInt(newRow);
-    if(colNumber <= 0 || rowNumber <= 0) {
+    if(colNumber < 5 || rowNumber < 5 || 
+      colNumber > 30 || rowNumber > 30) {
       return;
     }
 
@@ -124,8 +125,8 @@ function GameSettings({room, player, col, row, history, isAsc, actions}) {
               <Label>Column:</Label>
               &nbsp;
               <Input type="number" 
-              defaultValue={col}
               value={colInput} 
+              max={30} min={5}
               onChange={handleColInputChange} />
             </div>
             
@@ -135,8 +136,8 @@ function GameSettings({room, player, col, row, history, isAsc, actions}) {
               <Label>Row:</Label>
               &nbsp;
               <Input type="number" 
-              defaultValue={row}
               value={rowInput}
+              max={30} min={5}
               onChange={handleRowInputChange} />
             </div>
           </div>

@@ -59,9 +59,9 @@ function GameChat() {
           chatMessages && chatMessages.map((message, index) => {
             return (
             <div key={index} className={"message" + (authenticationService.getUserId() === message.user.id ? " myself" : "")}>
-              <p className="meta d-flex justify-content-between">
-                <div>{message.user.username}</div>
-                <div>{message.time}</div>
+              <p className="meta row">
+                <div className="col-lg-9">{message.user.username}</div>
+                <div className="col-lg-3 text-right">{message.time}</div>
               </p>
               <p className="text">{message.content}</p>
             </div>
