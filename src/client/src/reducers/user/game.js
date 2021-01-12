@@ -1,6 +1,7 @@
 import systemConstant from '../../config/constant';
 
 const initState = {
+  result: null,
   didFindWinner: false,
   col: systemConstant.GAME_STATE_DEFAULT.COL,
   row: systemConstant.GAME_STATE_DEFAULT.ROW,
@@ -26,6 +27,7 @@ export default function(state = initState, action) {
     case systemConstant.ACTION_TYPES.GAME.JUMP_TO:
       return {
         ...state,
+        result: action.result,
         didFindWinner: action.didFindWinner,
         stepNumber: action.stepNumber,
         xIsNext: action.xIsNext
@@ -33,8 +35,15 @@ export default function(state = initState, action) {
     case systemConstant.ACTION_TYPES.GAME.HIGHT_LIGHT:
       return {
         ...state,
+        result: action.result,
         didFindWinner: action.didFindWinner,
         history: action.history
+      };
+    case systemConstant.ACTION_TYPES.GAME.CHANGE_RESULT:
+      return {
+        ...state,
+        result: action.result,
+        didFindWinner: action.didFindWinner
       };
     case systemConstant.ACTION_TYPES.GAME.SORT:
       return {
@@ -45,6 +54,7 @@ export default function(state = initState, action) {
     case systemConstant.ACTION_TYPES.GAME.CHANGE_BOARD_SIZE:
       return {
         ...state,
+        result: null,
         didFindWinner: false,
         col: action.col,
         row: action.row,
@@ -70,6 +80,7 @@ export default function(state = initState, action) {
     case systemConstant.ACTION_TYPES.GAME.CHANGE_GAME_STATE:
       return {
         ...state,
+        result: action.result,
         didFindWinner: action.didFindWinner,
         col: action.col,
         row: action.row,

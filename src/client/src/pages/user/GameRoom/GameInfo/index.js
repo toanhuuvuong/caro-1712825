@@ -7,7 +7,7 @@ import authenticationService from '../../../../services/authentication';
 import systemContant from '../../../../config/constant';
 import PlayerCard from './PlayerCard';
 
-function GameInfo({room, player}) {
+function GameInfo({room, player, xIsNext}) {
   // --- Params
   const { roomId } = useParams();
 
@@ -43,8 +43,12 @@ function GameInfo({room, player}) {
       </div>
       <hr />
       <Row>
-        <Col lg={6}><PlayerCard isXPlayer={true} player={room && room.xPlayer} timeout={room && room.timeout} /></Col>
-        <Col lg={6}><PlayerCard isXPlayer={false} player={room && room.oPlayer} timeout={room && room.timeout} /></Col>
+        <Col lg={6}>
+          <PlayerCard room={room} reset={xIsNext} isXPlayer={true} player={room && room.xPlayer} timeout={room && room.timeout} />
+        </Col>
+        <Col lg={6}>
+          <PlayerCard room={room} reset={!xIsNext} isXPlayer={false} player={room && room.oPlayer} timeout={room && room.timeout} />
+        </Col>
       </Row>
     </>
   );

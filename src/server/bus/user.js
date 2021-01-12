@@ -90,6 +90,10 @@ module.exports = {
     return new Promise(function(resolve, reject) {
       const newValue = {
         ...model,
+        trophies: 0,
+        win: 0,
+        lost: 0,
+        total: 0,
         isDeleted: true,
         createdDate: null,
         createdBy: 'Unknown',

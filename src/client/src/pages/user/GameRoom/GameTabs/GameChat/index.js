@@ -57,13 +57,16 @@ function GameChat() {
         <ul>
         {
           chatMessages && chatMessages.map((message, index) => {
+            const isMySelf = authenticationService.getUserId() === message.user.id;
             return (
-            <div key={index} className={"message" + (authenticationService.getUserId() === message.user.id ? " myself" : "")}>
-              <p className="meta row">
-                <div className="col-lg-9">{message.user.username}</div>
-                <div className="col-lg-3 text-right">{message.time}</div>
-              </p>
-              <p className="text">{message.content}</p>
+            <div key={index} className={isMySelf ? "" : " d-flex justify-content-end"}>
+              <div className={"message" + (isMySelf ? " myself" : "")}>
+                <p className="meta row">
+                  <div className="col-lg-8">{message.user.name}</div>
+                  <div className="col-lg-4 text-right">{message.time}</div>
+                </p>
+                <p className="text">{message.content}</p>
+              </div>
             </div>
             );
           })

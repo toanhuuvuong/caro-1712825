@@ -82,7 +82,9 @@ function GameRoom({room, player, col, row, history, isAsc, stepNumber, xIsNext, 
           </Col>
           <Col lg={5} className="game-settings">
             <hr />
-            <GameInfo room={room} player={player} />
+            <GameInfo room={room} 
+            player={player}
+            xIsNext={xIsNext} />
             <hr />
             <GameTabs room={room} 
             player={player} 

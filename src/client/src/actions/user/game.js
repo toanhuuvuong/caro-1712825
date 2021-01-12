@@ -21,9 +21,10 @@ export function handleClick(socket, roomId, fields) {
   };
 };
 
-export function actionJumpTo(didFindWinner, stepNumber, xIsNext) {
+export function actionJumpTo(result, didFindWinner, stepNumber, xIsNext) {
   return {
     type: systemConstant.ACTION_TYPES.GAME.JUMP_TO,
+    result: result,
     didFindWinner: didFindWinner,
     stepNumber: stepNumber,
     xIsNext: xIsNext
@@ -36,14 +37,15 @@ export function jumpTo(socket, roomId, fields) {
       roomId: roomId, 
       fields: fields
     }, () => {
-      dispatch(actionJumpTo(fields.didFindWinner, fields.stepNumber, fields.xIsNext));
+      dispatch(actionJumpTo(fields.result, fields.didFindWinner, fields.stepNumber, fields.xIsNext));
     });
   };
 };
 
-export function actionHighlight(didFindWinner, history) {
+export function actionHighlight(result, didFindWinner, history) {
   return {
     type: systemConstant.ACTION_TYPES.GAME.HIGHT_LIGHT,
+    result: result,
     didFindWinner: didFindWinner,
     history: history
   }
@@ -55,7 +57,26 @@ export function highlight(socket, roomId, fields) {
       roomId: roomId, 
       fields: fields
     }, () => {
-      dispatch(actionHighlight(fields.didFindWinner, fields.history));
+      dispatch(actionHighlight(fields.result, fields.didFindWinner, fields.history));
+    });
+  };
+};
+
+export function actionChangeResult(result, didFindWinner) {
+  return {
+    type: systemConstant.ACTION_TYPES.GAME.CHANGE_RESULT,
+    result: result,
+    didFindWinner: didFindWinner,
+  }
+};
+
+export function changeResult(socket, roomId, fields) {
+  return dispatch => {
+    socket.emit('update game state', {
+      roomId: roomId, 
+      fields: fields
+    }, () => {
+      dispatch(actionChangeResult(fields.result, fields.didFindWinner));
     });
   };
 };
@@ -113,7 +134,7 @@ export function actionGetPlayer(room) {
 };
 
 export function actionChangeGameState(gameState) {
-  const {col, row, history, isAsc, stepNumber, xIsNext, didFindWinner} = gameState;
+  const {col, row, history, isAsc, stepNumber, xIsNext, didFindWinner, result} = gameState;
   return {
     type: systemConstant.ACTION_TYPES.GAME.CHANGE_GAME_STATE,
     col: col,
@@ -122,7 +143,8 @@ export function actionChangeGameState(gameState) {
     isAsc: isAsc,
     stepNumber: stepNumber,
     xIsNext: xIsNext,
-    didFindWinner: didFindWinner
+    didFindWinner: didFindWinner,
+    result: result
   }
 };
 

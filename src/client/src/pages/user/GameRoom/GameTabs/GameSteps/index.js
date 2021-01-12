@@ -25,6 +25,7 @@ function GameSteps({room, player, col, history, stepNumber, actions}) {
     }
 
     const fields = {
+      result: null,
       didFindWinner: false,
       stepNumber: move,
       xIsNext: (move % 2) === 0
@@ -47,7 +48,7 @@ function GameSteps({room, player, col, history, stepNumber, actions}) {
             return(
               <li key={step.move}>
                 <button className={className} 
-                onClick={() => jumpTo(step.move)}>{desc}</button>
+                onClick={() => jumpTo(step.move)} disabled={!player}>{desc}</button>
               </li>
             );
           })

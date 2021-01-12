@@ -22,6 +22,11 @@ module.exports = {
                 id: user._id.toString(),
                 username: user.username,
                 name: user.name,
+                avatar: user.avatar,
+                trophies: user.trophies,
+                win: user.win,
+                lost: user.lost,
+                total: user.total,
                 role: user.role
               };
               const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);

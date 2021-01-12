@@ -5,6 +5,7 @@ import {
   handleClick, 
   jumpTo, 
   highlight, 
+  changeResult,
   sort, 
   changeBoardSize,
   getRoomDetail
@@ -16,6 +17,7 @@ const mapStateToProps = function(state) {
     room: state.game.room,
     player: state.game.player,
     didFindWinner: state.game.didFindWinner,
+    result: state.game.result,
     col: state.game.col,
     row: state.game.row,
     history: state.game.history,
@@ -31,6 +33,7 @@ const mapDispatchToProps = function(dispatch) {
       handleClick,
       jumpTo,
       highlight,
+      changeResult,
       sort,
       changeBoardSize,
       getRoomDetail

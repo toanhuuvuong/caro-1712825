@@ -11,7 +11,8 @@
 	margin-bottom: 15px;
 	background-color: #dff7ff;
 	border-radius: 5px;
-	overflow-wrap: break-word;
+  overflow-wrap: break-word;
+  width: 70%;
 }
 
 #chat-messages .message .meta {

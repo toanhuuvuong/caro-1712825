@@ -79,6 +79,8 @@ module.exports = {
       type: type,
       password: password,
       timeout: parseInt(timeout),
+      didStartXTimer: false,
+      didStartOTimer: false,
       xPlayer: user, 
       oPlayer: null,
       viewers: [],
@@ -93,7 +95,8 @@ module.exports = {
         isAsc: true,
         stepNumber: 0,
         xIsNext: true,
-        didFindWinner: false
+        didFindWinner: false,
+        result: null
       },
       chatMessages: [],
       createdDate: Date.now()
@@ -192,7 +195,7 @@ module.exports = {
     if(iRoom !== -1) {
       const gameState = rooms[iRoom].gameState;
 
-      const {col, row, history, isAsc, stepNumber, xIsNext, didFindWinner} = fields;
+      const {col, row, history, isAsc, stepNumber, xIsNext, didFindWinner, result} = fields;
 
       if(col !== undefined) {
         gameState.col = col;
@@ -214,6 +217,9 @@ module.exports = {
       }
       if(didFindWinner !== undefined) {
         gameState.didFindWinner = didFindWinner;
+      }
+      if(result !== undefined) {
+        gameState.result = result;
       }
       return rooms[iRoom];
     }
@@ -241,5 +247,58 @@ module.exports = {
       return rooms[iRoom].chatMessages;
     }
     return null;
+  },
+  getTimeout: function(roomId, isXPlayer) {
+    const iRoom = rooms.findIndex(function(item) {
+      return item.id === roomId
+    });
+    if(iRoom !== -1) {
+      if((isXPlayer && !rooms[iRoom].didStartXTimer) ||
+        (!isXPlayer && !rooms[iRoom].didStartOTimer)) {
+        //rooms[iRoom].didStartXTimer = true;
+        return rooms[iRoom].timeout;
+      }
+    }
+    return null;
+  },
+  /*getDidStartTimer: function(roomId) {
+    const iRoom = rooms.findIndex(function(item) {
+      return item.id === roomId
+    });
+    if(iRoom !== -1) {
+      return rooms[iRoom].didStartTimer;
+    }
+    return null;
+  },*/
+  startTimer: function(roomId, isXPlayer, intervalId) {
+    const iRoom = rooms.findIndex(function(item) {
+      return item.id === roomId
+    });
+    if(iRoom !== -1) {
+      if(isXPlayer) {
+        rooms[iRoom].didStartXTimer = {...intervalId};
+      } else {
+        rooms[iRoom].didStartOTimer = {...intervalId};
+      }
+    }
+  },
+  stopTimer: function(roomId, isXPlayer) {
+    const iRoom = rooms.findIndex(function(item) {
+      return item.id === roomId
+    });
+    let intervalId = null;
+    if(iRoom !== -1) {
+      if(isXPlayer) {
+        intervalId = {...rooms[iRoom].didStartXTimer};
+        rooms[iRoom].didStartXTimer = false;
+      } else {
+        intervalId = {...rooms[iRoom].didStartOTimer};
+        rooms[iRoom].didStartOTimer = false;
+      }
+      if(intervalId) {
+        console.log('STOP TIMER ' + (isXPlayer ? 'X' : 'O'));
+        clearInterval(intervalId);
+      }
+    }
   }
 }

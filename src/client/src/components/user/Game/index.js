@@ -1,16 +1,22 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { Button, Input, Label, Row, Col } from 'reactstrap';
 
 import Board from '../Board';
 import SocketContext from '../../../contexts/SocketContext';
 import calculateWinner from './services/caculateWinner';
+import matchAPI from '../../../api/user/match';
+import moveAPI from '../../../api/user/move';
+import messageAPI from '../../../api/user/message';
+import userAPI from '../../../api/common/user';
+import authorizationService from '../../../services/authorization';
 
-function Game({roomId, room, player, col, row, history, isAsc, stepNumber, xIsNext, didFindWinner, actions}) {
+function Game({roomId, room, player, col, row, history, isAsc, stepNumber, xIsNext, didFindWinner, result, actions}) {
   // -- Context
   const socket = useContext(SocketContext);
 
   // --- State
   const [areReady, setAreReady] = useState(false);
+  const isSaved = useRef(false);
 
   // -- Effect hook
   useEffect(() => {
@@ -57,7 +63,7 @@ function Game({roomId, room, player, col, row, history, isAsc, stepNumber, xIsNe
     actions.handleClick(socket, roomId, fields);
   };
 
-  const highlight = (indexs) => {
+  const highlight = (indexs, value) => {
     const newHistory = isAsc 
     ? history.slice(0, stepNumber + 1)
     : history.slice(history.length - stepNumber - 1, history.length);
@@ -80,6 +86,7 @@ function Game({roomId, room, player, col, row, history, isAsc, stepNumber, xIsNe
     }
 
     const fields = {
+      result: value,
       didFindWinner: true,
       history: [...newHistory]
     };
@@ -102,6 +109,45 @@ function Game({roomId, room, player, col, row, history, isAsc, stepNumber, xIsNe
     return current;
   };
 
+  const saveMatch = (result) => {
+    matchAPI.save({
+      roomId: roomId,
+      xPlayer: room.xPlayer.id,
+      oPlayer: room.oPlayer.id,
+      colBoard: col,
+      rowBoard: row,
+      isXFirst: true,
+      result: result ? result.id : null
+    })
+    .then(data => {
+      if(data.ok) {
+        const id = data.item._id.toString();
+        
+        if(history) {
+          history.map(step => {
+            moveAPI.save({
+              move: step.move,
+              location: step.location,
+              matchId: id,
+            });
+          });
+        }
+        if(room && room.chatMessages) {
+          room.chatMessages.map((message, index) => {
+            messageAPI.save({
+              content: message.content,
+              time: message.time,
+              order: index,
+              userId: message.user.id,
+              matchId: id,
+            });
+          });
+        }
+        // Update player info
+      }
+    });
+  };
+
   const newHistory = history;
   const current = getCurrent(newHistory);
   const winner = calculateWinner(col, current.squares);
@@ -110,13 +156,38 @@ function Game({roomId, room, player, col, row, history, isAsc, stepNumber, xIsNe
   if (winner) {
     status = 'Winner: ' + winner.value;
     if(!didFindWinner) {
-      highlight(winner.indexs);
+      // Save result
+      let result = null;
+      const authorizationInRoom = authorizationService.getAuthorizationInRoom(room);
+      if(winner.value === 'X' && 
+      authorizationInRoom === authorizationService.authorizationTypes.X_PLAYER) {
+        result = room.xPlayer;
+      }
+      if(winner.value === 'O' && 
+      authorizationInRoom === authorizationService.authorizationTypes.O_PLAYER) {
+        result = room.xPlayer;
+      }
+      if(result && !isSaved.current) {
+        saveMatch(result);
+        isSaved.current = true;
+      }
+      highlight(winner.indexs, winner.value);
     }
   } 
   else {
     status = (stepNumber === col * row) 
     ? 'Draw'
     : 'Next player: ' + (xIsNext ? 'X' : 'O');
+    if(status === 'Draw' && !didFindWinner && !isSaved.current) {
+      // Save result
+      saveMatch(null);
+      isSaved.current = true;
+      const fields = {
+        result: 'Draw',
+        didFindWinner: true
+      };
+      actions.changeResult(socket, roomId, fields);
+    }
   }
 
   return (
@@ -124,7 +195,11 @@ function Game({roomId, room, player, col, row, history, isAsc, stepNumber, xIsNe
       <div className="d-flex">
         <div>{status}</div>
         &nbsp;&nbsp;&nbsp;
-        <div hidden={areReady || !player}><Button color="success" onClick={handleReadyButtonOnClick}>Ready</Button></div>
+        <div>Result: {result}</div>
+        &nbsp;&nbsp;&nbsp;
+        <div hidden={!room ||(room && (!room.xPlayer || !room.oPlayer)) || areReady || !player}>
+          <Button color="success" onClick={handleReadyButtonOnClick}>Ready</Button>
+        </div>
       </div>
       <hr />
       <Row>

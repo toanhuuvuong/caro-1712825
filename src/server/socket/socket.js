@@ -114,7 +114,7 @@ module.exports = function(server) {
           // socket.emit('get message', formatMessage(user.username, 'Wellcome to room ' + roomId + '!'));
 
           // Broardcast when user join room
-          manageRooms.addNewMessage(roomId, formatMessage(user, user.username + ' has joined the room!'));
+          manageRooms.addNewMessage(roomId, formatMessage(user, user.name + ' has joined the room!'));
           socket.broadcast.to(roomId).emit('get messages', manageRooms.getMessages(roomId));
 
           // Update list rooms
@@ -192,7 +192,7 @@ module.exports = function(server) {
           console.log(' ++', user.username , 'left Room:', roomId);
 
           // Broardcast when user leave room
-          manageRooms.addNewMessage(roomId, formatMessage(user, user.username + ' has left the room!'));
+          manageRooms.addNewMessage(roomId, formatMessage(user, user.name + ' has left the room!'));
           socket.broadcast.to(roomId).emit('get messages', manageRooms.getMessages(roomId));
 
           // Update list rooms
@@ -233,8 +233,8 @@ module.exports = function(server) {
           console.log(' ++', user.username , 'left Room:', room.id);
 
           // Broardcast when user leave room
-          manageRooms.addNewMessage(room.id, formatMessage(user, user.username + ' has left the room!'))
-          socket.broadcast.to(room.id).emit('get messages', manageRooms.getMessages(roomId));
+          manageRooms.addNewMessage(room.id, formatMessage(user, user.name + ' has left the room!'))
+          socket.broadcast.to(room.id).emit('get messages', manageRooms.getMessages(room.id));
 
           // Update list rooms
           io.emit('get rooms', manageRooms.getRooms());
@@ -255,6 +255,42 @@ module.exports = function(server) {
         // Update online users
         io.emit('online users', manageOnlineUsers.getOnlineUsers());
       }
+    });
+
+    // --- Reset timer
+    socket.on('reset timer', function({roomId, isXPlayer}) {
+      const timeout = manageRooms.getTimeout(roomId, isXPlayer);
+      if(timeout) {
+        console.log('TIMEOUT:', timeout);
+        const duration = 60 * timeout;
+        let timer = duration;
+        let minutes;
+        let seconds;
+
+        const intervalId = setInterval(() => {
+          manageRooms.startTimer(roomId, isXPlayer, intervalId);
+          console.log('START TIMER ' + (isXPlayer ? 'X' : 'O'));
+          minutes = parseInt(timer / 60, 10);
+          seconds = parseInt(timer % 60, 10);
+
+          minutes = minutes < 10 ? '0' + minutes : minutes;
+          seconds = seconds < 10 ? '0' + seconds : seconds;
+
+          console.log('TIME:', minutes + ':' + seconds);
+          io.to(roomId).emit('get timer ' + (isXPlayer ? 'X' : 'O'), {time: minutes + ':' + seconds});
+
+          if (--timer < 0) {
+            timer = duration;
+          }
+        }, 1000);
+      } else {
+        io.to(roomId).emit('get timer ' + isXPlayer ? 'X' : 'O', {time: null});
+      }
+    });
+
+    // --- Stop timer
+    socket.on('stop timer', function({roomId, isXPlayer}) {
+      manageRooms.stopTimer(roomId, isXPlayer);
     });
   });
 };

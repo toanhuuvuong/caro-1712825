@@ -40,5 +40,19 @@ export default {
       return room.oPlayer;
     }
     return null;
+  },
+  isPlayer: function(room) {
+    const userId = authenticationService.getUserId();
+    if(!userId) {
+      return false;
+    }
+    if(room.xPlayer && userId === room.xPlayer.id) {
+      return true;
+    }
+    if(room.oPlayer && userId === room.oPlayer.id) {
+      return true;
+    }
+    
+    return false;
   }
 };

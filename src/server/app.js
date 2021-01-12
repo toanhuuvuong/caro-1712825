@@ -17,6 +17,8 @@ require('./config/passport')(passport);
 // --- Require router 
 const userRouter = require('./routes/user');
 const matchRouter = require('./routes/match');
+const moveRouter = require('./routes/move');
+const messageRouter = require('./routes/message');
 const loginRouter = require('./routes/login');
 const registerRouter = require('./routes/register');
 const emailConfirmationRouter = require('./routes/email-confirmation');
@@ -80,6 +82,8 @@ app.use(function(req, res, next) {
 // --- URL
 app.use('/users', userRouter);
 app.use('/matches', matchRouter);
+app.use('/moves', moveRouter);
+app.use('/messages', messageRouter);
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
 app.use('/email-confirmation', emailConfirmationRouter);

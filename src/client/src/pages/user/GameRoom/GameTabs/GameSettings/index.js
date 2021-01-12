@@ -102,7 +102,7 @@ function GameSettings({room, player, col, row, history, isAsc, actions}) {
           <div className="d-flex">
             <div className="sort-item">
               <Input type="radio" name="sort" value="asc" 
-              onClick={() => sort('asc')} defaultChecked={isAsc} />
+              onClick={() => sort('asc')} defaultChecked={isAsc} disabled={!player} />
               &nbsp;
               <Label>Ascending</Label>
             </div>
@@ -111,7 +111,7 @@ function GameSettings({room, player, col, row, history, isAsc, actions}) {
             
             <div className="sort-item">
               <Input type="radio" name="sort" value="desc"
-              onClick={() => sort('desc')} defaultChecked={!isAsc} />
+              onClick={() => sort('desc')} defaultChecked={!isAsc} disabled={!player} />
               &nbsp;
               <Label>Descending</Label>
             </div>
@@ -127,7 +127,7 @@ function GameSettings({room, player, col, row, history, isAsc, actions}) {
               <Input type="number" 
               value={colInput} 
               max={30} min={5}
-              onChange={handleColInputChange} />
+              onChange={handleColInputChange} disabled={!player} />
             </div>
             
             &nbsp;&nbsp;&nbsp;
@@ -138,11 +138,11 @@ function GameSettings({room, player, col, row, history, isAsc, actions}) {
               <Input type="number" 
               value={rowInput}
               max={30} min={5}
-              onChange={handleRowInputChange} />
+              onChange={handleRowInputChange} disabled={!player} />
             </div>
           </div>
           <br />
-          <Button onClick={changeBoardSize}>Change</Button>
+          <Button onClick={changeBoardSize} disabled={!player}>Change</Button>
         </div>
       </div>
     </>
