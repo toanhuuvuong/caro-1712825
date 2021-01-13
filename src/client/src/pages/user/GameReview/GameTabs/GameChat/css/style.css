@@ -1,0 +1,33 @@
+#chat-messages {
+  background-color: white;
+  padding: 30px;
+  height: 250px;
+	max-height: 250px;
+	overflow-y: scroll;
+}
+
+#chat-messages .message {
+	padding: 10px;
+	margin-bottom: 15px;
+	background-color: #dff7ff;
+	border-radius: 5px;
+  overflow-wrap: break-word;
+  width: 70%;
+}
+
+#chat-messages .message .meta {
+	font-size: 15px;
+	font-weight: bold;
+	color: var(--dark-color-b);
+	opacity: 0.7;
+	margin-bottom: 7px;
+}
+
+#chat-messages .message .meta span {
+	color: #777;
+}
+
+#chat-messages .myself {
+	background-color: rgb(255, 253, 188);
+}
+

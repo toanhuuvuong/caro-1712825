@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const manageOnlineUsers = require('./mange-online-users');
 const manageRooms = require('./mange-rooms');
 const formatMessage = require('./format-message');
+const userBUS = require('../bus/user');
 
 module.exports = function(server) {
   const io = socketIO(server, {
@@ -22,8 +23,27 @@ module.exports = function(server) {
         if (err) { 
           throw err;
         }
-        socket.request.user = decodedToken;
-        return next();
+        userBUS.findById(decodedToken.id)
+        .then(function(user) {
+          if(user) {
+            const payload = {
+              id: user._id.toString(),
+              username: user.username,
+              name: user.name,
+              avatar: user.avatar,
+              trophies: user.trophies,
+              win: user.win,
+              lost: user.lost,
+              total: user.total,
+              role: user.role
+            };
+            socket.request.user = payload;
+            return next();
+          }
+        })
+        .catch(function(err) {
+          console.trace(err);
+        });
       });
     } else {
       return next();
@@ -259,7 +279,7 @@ module.exports = function(server) {
 
     // --- Reset timer
     socket.on('reset timer', function({roomId, isXPlayer}) {
-      const timeout = manageRooms.getTimeout(roomId, isXPlayer);
+      let timeout = manageRooms.getTimeout(roomId, isXPlayer);
       if(timeout) {
         console.log('TIMEOUT:', timeout);
         const duration = 60 * timeout;
@@ -267,22 +287,38 @@ module.exports = function(server) {
         let minutes;
         let seconds;
 
-        const intervalId = setInterval(() => {
-          manageRooms.startTimer(roomId, isXPlayer, intervalId);
-          console.log('START TIMER ' + (isXPlayer ? 'X' : 'O'));
-          minutes = parseInt(timer / 60, 10);
-          seconds = parseInt(timer % 60, 10);
+        if(!manageRooms.getDidSetInterval(roomId, isXPlayer)) {
+          manageRooms.setDidSetInterval(roomId, isXPlayer, true);
+          
+          const intervalId = setInterval(function() {
+            if(manageRooms.getDidStartTimer(roomId, isXPlayer)) {
+              if(timeout) {
+                timeout = null;
+                timer = duration;
+                console.log('RESET TIMER ' + (isXPlayer ? 'X' : 'O'));
+              } 
+              console.log('RUNNING TIMER ' + (isXPlayer ? 'X' : 'O'));
+              minutes = parseInt(timer / 60, 10);
+              seconds = parseInt(timer % 60, 10);
+  
+              minutes = minutes < 10 ? '0' + minutes : minutes;
+              seconds = seconds < 10 ? '0' + seconds : seconds;
+  
+              console.log('TIME:', minutes + ':' + seconds);
+              io.to(roomId).emit('get timer ' + (isXPlayer ? 'X' : 'O'), {time: minutes + ':' + seconds});
+  
+              if (--timer < 0) {
+                timer = duration;
+                clearInterval(intervalId);
+                manageRooms.stopTimer(roomId, isXPlayer);
+                console.log('TIMEOUT ' + (isXPlayer ? 'X' : 'O'));
+                io.to(roomId).emit('timeout', {isXPlayer: isXPlayer});
+              }
+            }
+          }, 1000);
+        }
 
-          minutes = minutes < 10 ? '0' + minutes : minutes;
-          seconds = seconds < 10 ? '0' + seconds : seconds;
-
-          console.log('TIME:', minutes + ':' + seconds);
-          io.to(roomId).emit('get timer ' + (isXPlayer ? 'X' : 'O'), {time: minutes + ':' + seconds});
-
-          if (--timer < 0) {
-            timer = duration;
-          }
-        }, 1000);
+        manageRooms.startTimer(roomId, isXPlayer, true);
       } else {
         io.to(roomId).emit('get timer ' + isXPlayer ? 'X' : 'O', {time: null});
       }
@@ -291,6 +327,19 @@ module.exports = function(server) {
     // --- Stop timer
     socket.on('stop timer', function({roomId, isXPlayer}) {
       manageRooms.stopTimer(roomId, isXPlayer);
+    });
+
+    // --- Ready
+    socket.on('ready', function({roomId, isXPlayer}) {
+      manageRooms.setIsReady(roomId, isXPlayer, true);
+      io.to(roomId).emit('get ready ' + (isXPlayer ? 'X' : 'O'), {isReady: manageRooms.getIsReady(roomId, isXPlayer)});
+      io.to(roomId).emit('get both ready', {areReady: manageRooms.getAreReady(roomId)});
+    });
+
+    // --- Update player info
+    socket.on('update player info', function({roomId, isXPlayer, model}) {
+      manageRooms.updatePlayer(roomId, isXPlayer, model);
+      io.to(roomId).emit('get room detail', manageRooms.getRoomById(roomId));
     });
   });
 };

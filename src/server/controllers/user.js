@@ -28,7 +28,7 @@ module.exports = {
     });
 	},
 	putById: function(req, res, next) {
-    const {id} = req.params;
+    const id = req.user.id;
     const model = req.body;
 
     userBUS.updateById(id, model)

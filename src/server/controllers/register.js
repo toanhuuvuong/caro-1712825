@@ -45,7 +45,7 @@ module.exports = {
                     'Active your account: ' + process.env.SERVER_URL + '/email-confirmation?code=' + token.code
                   )
                   .then(function(info) {
-                    res.json({ok: true, messageCode: 'register_success', item: user});
+                    res.json({ok: true, messageCode: 'register_success_check_mail_to_active_account', item: user});
                   })
                   .catch(function(err) {
                     console.trace(err);

@@ -21,5 +21,18 @@ export default {
     .then(res => {
       return res.json();
     });
+  },
+  update: function(body) {
+    return fetch(systemConstant.SERVER_URL + '/users', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': authenticationSevice.getBearerToken()
+      },
+      body: JSON.stringify(body)
+    })
+    .then(res => {
+      return res.json();
+    });
   }
 };

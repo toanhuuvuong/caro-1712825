@@ -15,6 +15,8 @@ import Dashboard from '../../../pages/user/Dashboard';
 import UpdateProfile from '../../../pages/user/UpdateProfile';
 import ChangePassword from '../../../pages/user/ChangePassword';
 import GameRoom from '../../../containers/user/GameRoom';
+import Charts from '../../../pages/user/Charts';
+import MatchesHistory from '../../../pages/user/MatchesHistory';
 import PrivateRoute from '../../user/PrivateRoute';
 
 import AdminDashboard from '../../../pages/admin/Dashboard';
@@ -49,6 +51,16 @@ function Menu() {
                 <NavLink href={isAdmin 
                 ? "/admin/dashboard" 
                 : "/dashboard"}>Dashboard</NavLink>
+              </NavItem>
+              }
+              { isLogin &&
+              <NavItem>
+                <NavLink href="/charts">Charts</NavLink>
+              </NavItem>
+              }
+              { isLogin &&
+              <NavItem>
+                <NavLink href="/matches-history">Matches Played</NavLink>
               </NavItem>
               }
               { isLogin && isAdmin &&
@@ -101,6 +113,8 @@ function Menu() {
             <PrivateRoute path='/update-profile' component={UpdateProfile} />
             <PrivateRoute path='/change-password' component={ChangePassword} />
             <PrivateRoute path='/game-room/:roomId' component={GameRoom} />
+            <PrivateRoute path='/charts' component={Charts} />
+            <PrivateRoute path='/matches-history' component={MatchesHistory} />
 
             <AdminPrivateRoute path='/admin/dashboard' component={AdminDashboard} />
             <AdminPrivateRoute path='/admin/update-profile' component={AdminUpdateProfile} />

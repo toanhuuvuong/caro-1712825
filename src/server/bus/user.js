@@ -85,6 +85,19 @@ module.exports = {
         return reject(err);
       });
     });
+  },
+  findAllOrderByTrophies: function() {
+    return new Promise(function(resolve, reject) {
+      const query = {};
+
+      userDAO.find(query, {trophies: -1})
+      .then(function(users) {
+        return resolve(users);
+      })
+      .catch(function(err) {
+        return reject(err);
+      });
+    });
 	},
 	insertOne: function(model) {
     return new Promise(function(resolve, reject) {
@@ -94,7 +107,7 @@ module.exports = {
         win: 0,
         lost: 0,
         total: 0,
-        isDeleted: true,
+        isDeleted: (!model.googleId && !model.facebookId),
         createdDate: null,
         createdBy: 'Unknown',
         modifiedDate: null,

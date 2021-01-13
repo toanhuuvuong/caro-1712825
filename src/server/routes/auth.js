@@ -16,6 +16,11 @@ router.get('/google/callback', passport.authenticate('google', {
     id: req.user._id.toString(),
     username: req.user.username,
     name: req.user.name,
+    avatar: req.user.avatar,
+    trophies: req.user.trophies,
+    win: req.user.win,
+    lost: req.user.lost,
+    total: req.user.total,
     role: req.user.role
   };
   const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
@@ -32,6 +37,11 @@ router.get('/facebook/callback', passport.authenticate('facebook', {
     id: req.user._id.toString(),
     username: req.user.username,
     name: req.user.name,
+    avatar: req.user.avatar,
+    trophies: req.user.trophies,
+    win: req.user.win,
+    lost: req.user.lost,
+    total: req.user.total,
     role: req.user.role
   };
   const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);

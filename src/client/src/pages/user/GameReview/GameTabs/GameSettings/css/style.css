@@ -1,0 +1,15 @@
+#settings {
+  background-color: white;
+  padding: 30px;
+  height: 250px;
+  max-height: 250px;
+  overflow-y: scroll;
+}
+
+.sort-item {
+  margin-left: 1.25rem;
+}
+
+.form-check-input {
+  position: unset !important;
+}

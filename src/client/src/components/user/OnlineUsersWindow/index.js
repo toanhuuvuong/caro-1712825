@@ -6,6 +6,7 @@ import './css/style.css';
 
 import SocketContext from '../../../contexts/SocketContext';
 import authenticationService from '../../../services/authentication';
+import authorizationService from '../../../services/authorization';
 import systemConstant from '../../../config/constant';
 import defaultAvatar from './images/default-avatar.png';
 
@@ -105,9 +106,11 @@ function OnlineUsersWindow({ room }) {
                 return (
                   <div>
                     <div className="online-users-item row">
-                      <div className="col-lg-7"><FaCircle fill="green" />&nbsp;<span>{item.name}</span></div>
-                      <div className="col-lg-5 d-flex justify-content-end">
-                        <Button hidden={!room} color="success" onClick={() => handleInviteButtonOnClick(item.id)}>Invite</Button>
+                      <div className="col-lg-8"><FaCircle fill="green" />&nbsp;<span>{item.name}</span></div>
+                      <div className="col-lg-4 d-flex justify-content-end">
+                        <Button hidden={!room || (room.xPlayer && item.id === room.xPlayer.id) || 
+                        (room.oPlayer && item.id === room.oPlayer.id)} color="success" 
+                        onClick={() => handleInviteButtonOnClick(item.id)}>Invite</Button>
                         &nbsp;
                         <Button color="primary" onClick={() => handleDetailButtonOnClick(item)}>Detail</Button>
                       </div>
@@ -140,7 +143,7 @@ function OnlineUsersWindow({ room }) {
                               <h6>Total</h6>
                               <div className="col-lg-12">
                                 <Input type="search" 
-                                value={0}
+                                value={user && user.total}
                                 readOnly />
                               </div>
                             </div>
@@ -148,7 +151,7 @@ function OnlineUsersWindow({ room }) {
                               <h6>Win</h6>
                               <div className="col-lg-12">
                                 <Input type="search" 
-                                value={0}
+                                value={user && user.win}
                                 readOnly />
                               </div>
                             </div>
@@ -156,23 +159,15 @@ function OnlineUsersWindow({ room }) {
                               <h6>Lost</h6>
                               <div className="col-lg-12">
                                 <Input type="search" 
-                                value={0}
+                                value={user && user.lost}
                                 readOnly />
                               </div>
                             </div>
                             <div>
-                              <h6>Draw</h6>
-                              <div className="col-lg-12">
-                                <Input type="search" 
-                                value={0}
-                                readOnly />
-                              </div>
-                            </div>
-                            <div>
-                              <h6>Win Percent</h6>
+                              <h6>Percent</h6>
                               <div className="col-lg-6 d-flex">
                                 <Input type="search" 
-                                value={0}
+                                value={user && ((user.total === 0 ? 0 : user.win / user.total)*100)}
                                 readOnly />
                                 &nbsp;
                                 <span>(%)</span>

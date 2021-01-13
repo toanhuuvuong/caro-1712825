@@ -48,24 +48,48 @@ module.exports = {
       });
     });
   },
+  findByUserIdOrderByCreatedDate: function(userId) {
+    return new Promise(function(resolve, reject) {
+      const query = {$or: [ { xPlayer: userId }, { oPlayer: userId } ]};
+
+      matchDAO.find(query)
+      .then(function(matches) {
+        return resolve(matches);
+      })
+      .catch(function(err) {
+        return reject(err);
+      });
+    });
+  },
 	insertOne: function(model) {
     return new Promise(function(resolve, reject) {
-      const newValue = {
-        ...model,
-        isDeleted: false,
-        createdDate: null,
-        createdBy: 'Unknown',
-        modifiedDate: null,
-        modifiedBy: 'Unknown'
-      };
+      const query = {roomId: model.roomId};
 
-      matchDAO.insertOne(newValue)
-      .then(function(result) {
-        if(result.result.ok !== 1) {
-          return resolve(null);
+      matchDAO.find(query)
+      .then(function(matches) {
+        if(!matches || matches.length === 0) {  
+          const newValue = {
+            ...model,
+            isDeleted: false,
+            createdDate: null,
+            createdBy: 'Unknown',
+            modifiedDate: null,
+            modifiedBy: 'Unknown'
+          };
+    
+          
+          matchDAO.insertOne(newValue)
+          .then(function(result) {
+            if(result.result.ok !== 1) {
+              return resolve(null);
+            }
+    
+            return resolve(newValue);
+          })
+          .catch(function(err) {
+            return reject(err);
+          });
         }
-
-        return resolve(newValue);
       })
       .catch(function(err) {
         return reject(err);

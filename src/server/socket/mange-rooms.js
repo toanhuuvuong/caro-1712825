@@ -81,6 +81,8 @@ module.exports = {
       timeout: parseInt(timeout),
       didStartXTimer: false,
       didStartOTimer: false,
+      didSetXInterval: false,
+      didSetOInterval: false,
       xPlayer: user, 
       oPlayer: null,
       viewers: [],
@@ -99,7 +101,9 @@ module.exports = {
         result: null
       },
       chatMessages: [],
-      createdDate: Date.now()
+      createdDate: Date.now(),
+      xIsReady: false,
+      oIsReady: false,
     };
     rooms.push(newRoom);
     return newRoom;
@@ -261,24 +265,53 @@ module.exports = {
     }
     return null;
   },
-  /*getDidStartTimer: function(roomId) {
+  getDidStartTimer: function(roomId, isXPlayer) {
     const iRoom = rooms.findIndex(function(item) {
       return item.id === roomId
     });
     if(iRoom !== -1) {
-      return rooms[iRoom].didStartTimer;
+      if(isXPlayer) {
+        return rooms[iRoom].didStartXTimer;
+      } else {
+        return rooms[iRoom].didStartOTimer;
+      }
     }
     return null;
-  },*/
+  },
+  getDidSetInterval: function(roomId, isXPlayer) {
+    const iRoom = rooms.findIndex(function(item) {
+      return item.id === roomId
+    });
+    if(iRoom !== -1) {
+      if(isXPlayer) {
+        return rooms[iRoom].didSetXInterval;
+      } else {
+        return rooms[iRoom].didSetOInterval;
+      }
+    }
+    return null;
+  },
+  setDidSetInterval: function(roomId, isXPlayer, value) {
+    const iRoom = rooms.findIndex(function(item) {
+      return item.id === roomId
+    });
+    if(iRoom !== -1) {
+      if(isXPlayer) {
+        rooms[iRoom].didSetXInterval = value;
+      } else {
+        rooms[iRoom].didSetOInterval = value;
+      }
+    }
+  },
   startTimer: function(roomId, isXPlayer, intervalId) {
     const iRoom = rooms.findIndex(function(item) {
       return item.id === roomId
     });
     if(iRoom !== -1) {
       if(isXPlayer) {
-        rooms[iRoom].didStartXTimer = {...intervalId};
+        rooms[iRoom].didStartXTimer = intervalId;
       } else {
-        rooms[iRoom].didStartOTimer = {...intervalId};
+        rooms[iRoom].didStartOTimer = intervalId;
       }
     }
   },
@@ -286,18 +319,60 @@ module.exports = {
     const iRoom = rooms.findIndex(function(item) {
       return item.id === roomId
     });
-    let intervalId = null;
     if(iRoom !== -1) {
+      console.log('STOP TIMER ' + (isXPlayer ? 'X' : 'O'));
       if(isXPlayer) {
-        intervalId = {...rooms[iRoom].didStartXTimer};
+        //clearInterval(rooms[iRoom].didStartXTimer);
         rooms[iRoom].didStartXTimer = false;
       } else {
-        intervalId = {...rooms[iRoom].didStartOTimer};
+        //clearInterval(rooms[iRoom].didStartOTimer);
         rooms[iRoom].didStartOTimer = false;
       }
-      if(intervalId) {
-        console.log('STOP TIMER ' + (isXPlayer ? 'X' : 'O'));
-        clearInterval(intervalId);
+    }
+  },
+  setIsReady: function(roomId, isXPlayer, value) {
+    const iRoom = rooms.findIndex(function(item) {
+      return item.id === roomId
+    });
+    if(iRoom !== -1) {
+      if(isXPlayer) {
+        rooms[iRoom].xIsReady = value;
+      } else {
+        rooms[iRoom].oIsReady = value;
+      }
+    }
+  },
+  getIsReady: function(roomId, isXPlayer) {
+    const iRoom = rooms.findIndex(function(item) {
+      return item.id === roomId
+    });
+    if(iRoom !== -1) {
+      if(isXPlayer) {
+        return rooms[iRoom].xIsReady;
+      } else {
+        return rooms[iRoom].oIsReady;
+      }
+    }
+    return null;
+  },
+  getAreReady: function(roomId) {
+    const iRoom = rooms.findIndex(function(item) {
+      return item.id === roomId
+    });
+    if(iRoom !== -1) {
+      return rooms[iRoom].xIsReady && rooms[iRoom].oIsReady;
+    }
+    return null;
+  },
+  updatePlayer: function(roomId, isXPlayer, model) {
+    const iRoom = rooms.findIndex(function(item) {
+      return item.id === roomId
+    });
+    if(iRoom !== -1) {
+      if(isXPlayer) {
+        rooms[iRoom].xPlayer = model;
+      } else {
+        rooms[iRoom].oPlayer = model;
       }
     }
   }

@@ -27,6 +27,8 @@ const authRouter = require('./routes/auth');
 // User routes
 const updateProfileRouter = require('./routes/user/update-profile');
 const changePasswordRouter = require('./routes/user/change-password');
+const chartsRouter = require('./routes/user/charts');
+const matchesHistoryRouter = require('./routes/user/matches-history');
 // Admin routes
 const adminUpdateProfileRouter = require('./routes/admin/update-profile');
 const adminChangePasswordRouter = require('./routes/admin/change-password');
@@ -92,6 +94,8 @@ app.use('/auth', authRouter);
 // User URL
 app.use('/update-profile', updateProfileRouter);
 app.use('/change-password', changePasswordRouter);
+app.use('/charts', chartsRouter);
+app.use('/matches-history', matchesHistoryRouter);
 // Admin URL
 app.use('/admin/update-profile', adminUpdateProfileRouter);
 app.use('/admin/change-password', adminChangePasswordRouter);
