@@ -22,6 +22,17 @@ export default {
       return res.json();
     });
   },
+  getByMatchId: function(matchId) {
+    return fetch(systemConstant.SERVER_URL + '/moves/match/' + matchId, {
+      method: 'GET',
+      headers: {
+        'Authorization': authenticationSevice.getBearerToken()
+      }
+    })
+    .then(res => {
+      return res.json();
+    });
+  },
   save: function(body) {
     return fetch(systemConstant.SERVER_URL + '/moves', {
       method: 'POST',

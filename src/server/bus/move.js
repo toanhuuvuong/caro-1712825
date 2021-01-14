@@ -39,7 +39,7 @@ module.exports = {
     return new Promise(function(resolve, reject) {
       const query = {matchId: matchId};
 
-      moveDAO.find(query)
+      moveDAO.find(query, {move: 1})
       .then(function(moves) {
         return resolve(moves);
       })

@@ -375,5 +375,38 @@ module.exports = {
         rooms[iRoom].oPlayer = model;
       }
     }
+  },
+  getQuickRoom: function(user) {
+    if(!user || isInAnyRooms(user.id)) {
+      return null;
+    }
+
+    const iRoom = rooms.findIndex(function(item) {
+      return (item.type === 'public' && (!item.xPlayer || !item.oPlayer));
+    });
+    if (iRoom !== -1) {
+      const room = rooms[iRoom];
+
+      // Find xPlayer
+      if(!room.xPlayer) {
+        room.xPlayer = user;
+        return room;
+      }
+      // User is xPlayer
+      if(room.xPlayer.id === user.id) {
+        return room;
+      }
+      // Find oPlayer
+      if(!room.oPlayer) {
+        room.oPlayer = user;
+        return room;
+      }
+      // User is oPlayer
+      if(room.oPlayer.id === user.id) {
+        return room;
+      }
+      return room;
+    }
+    return null;
   }
 }

@@ -49,6 +49,10 @@ function ListUser() {
     window.open(systemConstant.CLIENT_URL + '/admin/edit-user/' + id, '_self')
   };
 
+  const handleMatchesPlayedButtonOnClick = id => {
+    window.open(systemConstant.CLIENT_URL + '/user-matches/' + id, '_self')
+  };
+
   return(
     <>
       <Breadcrumbs currentItem="List users" />
@@ -90,6 +94,8 @@ function ListUser() {
                   <td>{item.role}</td>
                   <td>
                     <Button color="success" onClick={() => handleDetailButtonOnClick(item._id.toString())}>Detail</Button>
+                    &nbsp;&nbsp;&nbsp;
+                    <Button color="danger" onClick={() => handleMatchesPlayedButtonOnClick(item._id.toString())}>Matches Played</Button>
                   </td>
                 </tr>
               );

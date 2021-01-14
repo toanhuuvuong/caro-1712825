@@ -106,6 +106,18 @@ function Dashboard() {
     });
   };
 
+  const handleQuickPlayButtonOnClick = event => {
+    event.preventDefault();
+    const room = {
+      userId: authenticationService.getUserId(),
+    };
+    socket.emit('quick play', room, data => {
+      if(data.ok) {
+        window.open(systemContant.CLIENT_URL + '/game-room/' + data.item.id, '_self');
+      }
+    });
+  };
+
   const handleJoinRoomButtonOnClick = (roomId, roomType) => {
     const room = {
       userId: authenticationService.getUserId(),
@@ -161,6 +173,8 @@ function Dashboard() {
           <h3>Rooms Table</h3>
           &nbsp;&nbsp;&nbsp;
           <Button onClick={roomSettingsToggle}>New Game Room</Button>
+          &nbsp;&nbsp;&nbsp;
+          <Button color="warning" onClick={handleQuickPlayButtonOnClick}>Quick Play</Button>
           <Modal isOpen={roomSettingsModal} toggle={roomSettingsToggle}>
             <ModalHeader toggle={roomSettingsToggle}>Room Settings</ModalHeader>
             <ModalBody>

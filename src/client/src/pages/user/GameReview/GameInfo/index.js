@@ -1,54 +1,37 @@
-import React, { useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import React from 'react';
 import { Button, Row, Col } from 'reactstrap';
-
-import SocketContext from '../../../../contexts/SocketContext';
-import authenticationService from '../../../../services/authentication';
+import authentication from '../../../../services/authentication';
 import systemContant from '../../../../config/constant';
+
 import PlayerCard from './PlayerCard';
 
-function GameInfo({room, player, xIsNext}) {
-  // --- Params
-  const { roomId } = useParams();
-
-  // --- Context
-  const socket = useContext(SocketContext);
-
+function GameInfo({match}) {
   // --- Handle functions
   const handleLeaveRoomButtonOnClick = event => {
     event.preventDefault();
-    socket.emit('leave room', {
-      roomId: roomId,
-      userId: authenticationService.getUserId()
-    }, data => {
-      if(data.ok) {
-        
-        window.open(systemContant.CLIENT_URL + '/dashboard', '_self');
-      }
-    });
+    window.open(systemContant.CLIENT_URL + authentication.isAdmin() ? '/admin/dashboard' : '/dashboard', '_self');
   };
   
   return(
     <>
       <div className="row">
         <div className="col-lg-9">
-          <h5>Room {room && room.name}</h5>
-          <div>ID: {room && room.id}</div>
-          {room && room.type === 'private' && <div>Password: {room && room.password}</div>}
+          <h5>Match</h5>
+          <div>ID: {match && match._id && match._id.toString()}</div>
         </div>
         
         <div className="col-lg-3 text-right">
           <Button color="danger"
-          onClick={handleLeaveRoomButtonOnClick}>Leave Room</Button>
+          onClick={handleLeaveRoomButtonOnClick}>Leave Match</Button>
         </div> 
       </div>
       <hr />
       <Row>
         <Col lg={6}>
-          <PlayerCard room={room} reset={xIsNext} isXPlayer={true} player={room && room.xPlayer} timeout={room && room.timeout} />
+          <PlayerCard match={match} isXPlayer={true} player={match.xPlayer} />
         </Col>
         <Col lg={6}>
-          <PlayerCard room={room} reset={!xIsNext} isXPlayer={false} player={room && room.oPlayer} timeout={room && room.timeout} />
+          <PlayerCard match={match} isXPlayer={false} player={match.oPlayer} />
         </Col>
       </Row>
     </>

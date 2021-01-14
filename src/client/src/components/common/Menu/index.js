@@ -15,6 +15,7 @@ import Dashboard from '../../../pages/user/Dashboard';
 import UpdateProfile from '../../../pages/user/UpdateProfile';
 import ChangePassword from '../../../pages/user/ChangePassword';
 import GameRoom from '../../../containers/user/GameRoom';
+import GameReview from '../../../containers/user/GameReview';
 import Charts from '../../../pages/user/Charts';
 import MatchesHistory from '../../../pages/user/MatchesHistory';
 import PrivateRoute from '../../user/PrivateRoute';
@@ -23,6 +24,8 @@ import AdminDashboard from '../../../pages/admin/Dashboard';
 import AdminUpdateProfile from '../../../pages/admin/UpdateProfile';
 import AdminChangePassword from '../../../pages/admin/ChangePassword';
 import AdminListUser from '../../../pages/admin/ListUser';
+import AdminListMatch from '../../../pages/admin/ListMatch';
+import AdminUserMatches from '../../../pages/admin/UserMatches';
 import AdminEditUser from '../../../pages/admin/EditUser';
 import AdminPrivateRoute from '../../admin/PrivateRoute';
 
@@ -66,6 +69,11 @@ function Menu() {
               { isLogin && isAdmin &&
               <NavItem>
                 <NavLink href="/admin/list-users">Manange users</NavLink>
+              </NavItem>
+              }
+              { isLogin && isAdmin &&
+              <NavItem>
+                <NavLink href="/admin/list-matches">Manange matches</NavLink>
               </NavItem>
               }
               
@@ -113,12 +121,15 @@ function Menu() {
             <PrivateRoute path='/update-profile' component={UpdateProfile} />
             <PrivateRoute path='/change-password' component={ChangePassword} />
             <PrivateRoute path='/game-room/:roomId' component={GameRoom} />
+            <PrivateRoute path='/game-review/:matchId' component={GameReview} />
             <PrivateRoute path='/charts' component={Charts} />
             <PrivateRoute path='/matches-history' component={MatchesHistory} />
 
             <AdminPrivateRoute path='/admin/dashboard' component={AdminDashboard} />
             <AdminPrivateRoute path='/admin/update-profile' component={AdminUpdateProfile} />
             <AdminPrivateRoute path='/admin/list-users' component={AdminListUser} />
+            <AdminPrivateRoute path='/admin/list-matches' component={AdminListMatch} />
+            <AdminPrivateRoute path='/user-matches/:userId' component={AdminUserMatches} />
             <AdminPrivateRoute path='/admin/edit-user/:userId' component={AdminEditUser} />
             <AdminPrivateRoute path='/admin/change-password' component={AdminChangePassword} />
 

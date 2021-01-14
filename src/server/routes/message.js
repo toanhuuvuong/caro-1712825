@@ -8,6 +8,7 @@ const router = express.Router();
 router.get('/', authentication.ensureAuthenticated, controller.getList);
 
 router.get('/:id', authentication.ensureAuthenticated, controller.getById);
+router.get('/match/:matchId', authentication.ensureAuthenticated, controller.getByMatchId);
 
 router.post('/', authentication.ensureAuthenticated, controller.post);
 

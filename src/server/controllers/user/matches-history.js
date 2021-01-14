@@ -13,5 +13,17 @@ module.exports = {
       console.trace(err);
       res.json({ok: false, messageCode: 'find_all_fail'});
     });
+  },
+  getByUserId: function(req, res, next) {
+    const {userId} = req.params;
+    
+    matchBUS.findByUserIdOrderByCreatedDate(userId)
+    .then(function(users) {
+			res.json({ok: true, messageCode: 'find_all_success', items: users});
+    })
+    .catch(function(err) {
+      console.trace(err);
+      res.json({ok: false, messageCode: 'find_all_fail'});
+    });
 	}
 };

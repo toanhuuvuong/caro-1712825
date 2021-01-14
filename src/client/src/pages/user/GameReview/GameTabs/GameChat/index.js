@@ -6,10 +6,11 @@ import './css/style.css';
 
 import SocketContext from '../../../../../contexts/SocketContext';
 import authenticationService from '../../../../../services/authentication';
+import messageAPI from '../../../../../api/user/message';
 
 function GameChat() {
   // --- Params
-  const { roomId } = useParams();
+  const { matchId } = useParams();
 
   // --- Context
   const socket = useContext(SocketContext);
@@ -17,39 +18,18 @@ function GameChat() {
   // --- State
   // Main
   const [chatMessages, setChatMessages] = useState([]);
-  // Input
-  const [messageInput, setMessageInput] = useState('');
 
   // --- Effect hook
   useEffect(() => {
-    socket.emit('get messages', roomId);
-    socket.on('get messages', messages => {
-      setChatMessages(messages);
-      // Scroll chat
-      const chatMessages = document.getElementById('chat-messages');
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+    messageAPI.getByMatchId(matchId)
+    .then(data => {
+      if(data.ok) {
+        setChatMessages(data.items);
+      }
     });
   }, []);
 
   // --- Handle functions
-  const handleMessageInputChange = event => {
-    setMessageInput(event.target.value);
-  };
-
-  const handleSendButtonOnClick = event => {
-    event.preventDefault();
-    if(messageInput) {
-      socket.emit('chat message', {
-        roomId: roomId, 
-        content: messageInput
-      }, () => {
-        setMessageInput('');
-        // Scroll chat
-        const chatMessages = document.getElementById('chat-messages');
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      });
-    }
-  };
 
   return(
     <>  
@@ -57,12 +37,12 @@ function GameChat() {
         <ul>
         {
           chatMessages && chatMessages.map((message, index) => {
-            const isMySelf = authenticationService.getUserId() === message.user.id;
+            const isMySelf = authenticationService.getUserId() === message.userId;
             return (
             <div key={index} className={isMySelf ? "" : " d-flex justify-content-end"}>
               <div className={"message" + (isMySelf ? " myself" : "")}>
                 <p className="meta row">
-                  <div className="col-lg-8">{message.user.name}</div>
+                  <div className="col-lg-8">{message.userId}</div>
                   <div className="col-lg-4 text-right">{message.time}</div>
                 </p>
                 <p className="text">{message.content}</p>
@@ -72,12 +52,6 @@ function GameChat() {
           })
         }
         </ul>
-      </div>
-      <div class="d-flex">
-        <Button onClick={handleSendButtonOnClick}>Send</Button>
-        <Input placeholder="Nhập tin nhắn..."
-        value={messageInput}
-        onChange={handleMessageInputChange}></Input>  
       </div>
     </>
   );

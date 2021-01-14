@@ -341,5 +341,43 @@ module.exports = function(server) {
       manageRooms.updatePlayer(roomId, isXPlayer, model);
       io.to(roomId).emit('get room detail', manageRooms.getRoomById(roomId));
     });
+
+    // --- Quick play
+    socket.on('quick play', function({userId}, callback) {
+      if(user && user.id === userId) {
+        const quickRoom = manageRooms.getQuickRoom(user);
+        if(quickRoom) {
+          const settings = {
+            password: ''
+          };
+          const room = manageRooms.joinRoom(quickRoom.id, user, settings);
+          if(room) {
+            console.log(' ++', user.username, 'joined Room:', quickRoom.id);
+            socket.join(quickRoom.id); // socket join
+
+            // Wellcome new user
+            // socket.emit('get message', formatMessage(user.username, 'Wellcome to room ' + roomId + '!'));
+
+            // Broardcast when user join room
+            manageRooms.addNewMessage(quickRoom.id, formatMessage(user, user.name + ' has joined the room!'));
+            socket.broadcast.to(quickRoom.id).emit('get messages', manageRooms.getMessages(quickRoom.id));
+
+            // Update list rooms
+            io.emit('get rooms', manageRooms.getRooms());
+
+            // Update room info
+            io.to(quickRoom.id).emit('get room detail', manageRooms.getRoomById(quickRoom.id));
+
+            callback({ok: true, messageCode: 'join_room_success', item: room});
+          } else {
+            callback({ok: false, messageCode: 'join_room_fail'});
+          }
+        } else {
+          callback({ok: false, messageCode: 'wrong_password'});
+        }
+      } else {
+        callback({ok: false, messageCode: 'join_room_fail'});
+      }
+    });
   });
 };

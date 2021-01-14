@@ -27,6 +27,22 @@ module.exports = {
       res.json({ok: false, messageCode: 'find_by_id_fail'});
     });
   },
+  getByMatchId: function(req, res, next) {
+		const {matchId} = req.params;
+
+    messageBUS.findByMatchId(matchId)
+    .then(function(messages) {
+			if(!messages) {
+				res.json({ok: false, messageCode: 'not_exist'});
+			} else {
+				res.json({ok: true, messageCode: 'find_by_id_success', items: messages});
+			}
+    })
+    .catch(function(err) {
+      console.trace(err);
+      res.json({ok: false, messageCode: 'find_by_id_fail'});
+    });
+  },
   post: function(req, res, next) {
     const model = req.body;
 

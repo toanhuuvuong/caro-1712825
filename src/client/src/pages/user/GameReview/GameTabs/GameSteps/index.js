@@ -3,34 +3,23 @@ import { useParams } from 'react-router-dom';
 
 import './css/style.css';
 
-import SocketContext from '../../../../../contexts/SocketContext';
-
-function GameSteps({room, player, col, history, stepNumber, actions}) {
+function GameSteps({col, history, stepNumber, actions}) {
   // --- Params
-  const { roomId } = useParams();
-
-  // --- Context
-  const socket = useContext(SocketContext);
+  const { matchId } = useParams();
 
   // --- Effect hook
   useEffect(() => {
-    // Scroll top
-    const steps = document.getElementById('steps');
-    steps.scrollTop = steps.scrollHeight;
+    
   }, []);
    // --- Handle functions
   const jumpTo = (move) => {
-    if(!player || !room.xPlayer || !room.oPlayer) {
-      return;
-    }
-
     const fields = {
       result: null,
       didFindWinner: false,
       stepNumber: move,
       xIsNext: (move % 2) === 0
     };
-    actions.jumpTo(socket, roomId, fields);
+    actions.jumpTo(fields);
   };
   return(
     <>  
@@ -48,7 +37,7 @@ function GameSteps({room, player, col, history, stepNumber, actions}) {
             return(
               <li key={step.move}>
                 <button className={className} 
-                onClick={() => jumpTo(step.move)} disabled={!player}>{desc}</button>
+                onClick={() => jumpTo(step.move)}>{desc}</button>
               </li>
             );
           })

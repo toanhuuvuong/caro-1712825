@@ -6,5 +6,6 @@ const authentication = require('../../services/authentication');
 const router = express.Router();
 
 router.get('/', authentication.ensureAuthenticated, controller.getList);
+router.get('/:userId', authentication.ensureAuthenticated, controller.getByUserId);
 
 module.exports = router;

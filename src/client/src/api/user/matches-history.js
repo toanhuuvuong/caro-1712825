@@ -10,5 +10,14 @@ export default {
       }
     })
     .then(res => res.json());
+  },
+  getByUserId: function(userId) {
+    return fetch(systemConstant.SERVER_URL + '/matches-history/' + userId, {
+      method: 'GET',
+      headers: {
+        'Authorization': authenticationSevice.getBearerToken()
+      }
+    })
+    .then(res => res.json());
   }
 };
